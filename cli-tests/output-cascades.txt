@@ -1,0 +1,84 @@
+[SUCCESS] clear
+PressMemo has been cleared!
+
+[SUCCESS] addcontact n/Alice p/91234567 e/alice@example.com a/123 Jurong West t/friends
+New contact added: Alice; Phone: 91234567; Email: alice@example.com; Address: 123 Jurong West; Tags: [friends]; Stories: 
+
+[SUCCESS] addcontact n/Bob p/98765432 e/bob@example.com a/456 Clementi
+New contact added: Bob; Phone: 98765432; Email: bob@example.com; Address: 456 Clementi; Tags: ; Stories: 
+
+[SUCCESS] addstory Flood Investigation t/urgent
+Story "Flood Investigation" has been added.
+
+[SUCCESS] addstory Budget 2026
+Story "Budget 2026" has been added.
+
+[SUCCESS] assign ci/1 si/1
+Assigned Alice to Flood Investigation
+
+[SUCCESS] assign ci/2 si/1
+Assigned Bob to Flood Investigation
+
+[SUCCESS] addfollowup Call Alice about witness interview ci/1
+Followup Call Alice about witness interview has been added to Alice.
+
+[SUCCESS] addfollowup Send draft to Alice ci/1
+Followup Send draft to Alice has been added to Alice.
+
+[SUCCESS] addfollowup Bob follow up notes ci/2
+Followup Bob follow up notes has been added to Bob.
+
+[SUCCESS] listcontacts
+Listed all 2 contact(s).
+
+[SUCCESS] liststories
+Listed all 2 story(ies).
+
+[SUCCESS] listfollowups
+Listed all 3 followup(s).
+
+[SUCCESS] liststories ci/1
+Listed 1 story(ies) assigned to Alice
+
+[SUCCESS] listcontacts si/1
+Listed 2 contact(s) assigned to Flood Investigation
+
+[SUCCESS] listfollowups ci/1
+Listed 2 followup(s) assigned to Alice
+
+[SUCCESS] editcontact 1 n/Alice Smith
+Edited contact: Alice Smith; Phone: 91234567; Email: alice@example.com; Address: 123 Jurong West; Tags: [friends]; Stories: [Flood Investigation]
+
+[SUCCESS] listfollowups
+Listed all 3 followup(s).
+
+[SUCCESS] listcontacts si/1
+Listed 2 contact(s) assigned to Flood Investigation
+
+[SUCCESS] liststories ci/1
+Listed 1 story(ies) assigned to Alice Smith
+
+[SUCCESS] deletecontact 1
+Deleted contact: Alice Smith; Phone: 91234567; Email: alice@example.com; Address: 123 Jurong West; Tags: [friends]; Stories: [Flood Investigation]
+
+[SUCCESS] listcontacts
+Listed all 1 contact(s).
+
+[SUCCESS] liststories
+Listed all 2 story(ies).
+
+[SUCCESS] listfollowups
+Listed all 1 followup(s).
+
+[SUCCESS] liststories ci/1
+Listed 1 story(ies) assigned to Bob
+
+[SUCCESS] listcontacts si/1
+Listed 1 contact(s) assigned to Flood Investigation
+
+[SUCCESS] listfollowups ci/1
+Listed 1 followup(s) assigned to Bob
+
+[SUCCESS] clear
+PressMemo has been cleared!
+

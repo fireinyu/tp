@@ -1,0 +1,147 @@
+# ==========================================
+# TEST SUITE: PRESSMEMO FUNCTIONALITY & FLAWS
+# ==========================================
+
+# --- 1. BASIC COMMANDS & LISTING ---
+list
+listcontacts
+liststories
+listfollowups
+
+# --- 2. CONTACT MANAGEMENT & CONSTRAINTS ---
+# Valid contact creation
+addcontact n/Alice Smith p/91234567 e/alice@example.com a/123 Kent Ridge Rd t/journalist
+
+# Duplicate contact (exact match)
+addcontact n/Alice Smith p/91234567 e/alice@example.com a/123 Kent Ridge Rd t/journalist
+
+# Duplicate contact (case variation in name)
+addcontact n/alice smith p/99998888 e/alicesmith@example.com a/Another Address
+
+# Invalid phone numbers (symbols, letters, too short/long)
+addcontact n/Bob Tan p/12 e/bob@example.com a/Blk 123 Tampines
+addcontact n/Bob Tan p/9123-4567 e/bob@example.com a/Blk 123 Tampines
+addcontact n/Bob Tan p/+6591234567 e/bob@example.com a/Blk 123 Tampines
+
+# Invalid email addresses
+addcontact n/Bob Tan p/91234567 e/bob@@example.com a/Blk 123 Tampines
+addcontact n/Bob Tan p/91234567 e/bob@example..com a/Blk 123 Tampines
+addcontact n/Bob Tan p/91234567 e/bob a/Blk 123 Tampines
+
+# Names with symbols (e.g. hyphens, apostrophes, parentheses, slashes)
+addcontact n/Mary-Jane O'Connor p/98887777 e/maryjane@example.com a/Orchard Rd
+addcontact n/John Doe (Intern) p/98887776 e/johnintern@example.com a/Clementi
+
+# Preamble errors & duplicate prefixes
+addcontact extra_preamble n/Test User p/98765432 e/test@example.com a/Street
+addcontact n/User One n/User Two p/98765432 e/test@example.com a/Street
+
+# --- 3. STORY MANAGEMENT & CONSTRAINTS ---
+# Valid story creation
+addstory Breaking News 2026 t/breaking
+
+# Duplicate story (exact match)
+addstory Breaking News 2026
+
+# Duplicate story (case-variant)
+addstory breaking news 2026
+
+# Story name with symbols: slash '/'
+addstory Investigation 2025/2026
+
+# Story name with symbols: parentheses '()', hyphens '-', quotes '\"'
+addstory Election Special (Part 1)
+addstory COVID-19 Recovery Report
+addstory "Exclusive" Report
+
+# Edit story to duplicate name
+editstory 1 n/Breaking News 2026
+
+# Edit story with non-existent index
+editstory 999 n/Nonexistent
+
+# Delete story formatting check
+deletestory 1
+
+# --- 4. ASSIGNMENT & RELATIONSHIPS ---
+# Re-list to see current state
+list
+# Assign contact to story
+assign ci/1 si/1
+# Duplicate assignment
+assign ci/1 si/1
+# Assign with invalid indices
+assign ci/999 si/1
+assign ci/1 si/999
+assign ci/0 si/1
+assign ci/-1 si/1
+
+# Unassign valid
+unassign ci/1 si/1
+# Unassign when not assigned
+unassign ci/1 si/1
+
+# --- 5. FOLLOWUPS ---
+# Add followup to existing contact
+addfollowup Interview CEO ci/1
+# Add followup with empty description / invalid index
+addfollowup ci/1
+addfollowup Interview CEO ci/999
+
+# List followups for contact with 0 followups vs with followups
+listfollowups ci/3
+listfollowups ci/1
+listfollowups ci/999
+
+# Delete followup with invalid index
+deletefollowup 999
+# Delete existing followup
+deletefollowup 1
+
+# --- 6. CASCADING DELETION INTEGRITY ---
+# Re-add story and followup, assign to contact, then delete contact
+addstory Tech Scandal
+assign ci/1 si/1
+addfollowup Contact Source ci/1
+# List to verify links
+list
+# Delete contact 1 (which has story and followup assigned)
+deletecontact 1
+# Check if stories or followups still reference deleted contact
+liststories
+listfollowups
+
+# --- 7. SHORTCUTS ---
+# List shortcuts
+shortcut
+# Add shortcut
+shortcut s/lc c/listcontacts
+# Execute shortcut
+lc
+# Override existing command with shortcut
+shortcut s/list c/help
+# Shortcut referencing non-existent command
+shortcut s/bad c/nonexistentcommand
+# Chained/recursive shortcuts
+shortcut s/a c/b
+shortcut s/b c/list
+a
+# Unshortcut non-existent
+unshortcut invalid_sc
+# Unshortcut valid
+unshortcut lc
+
+# --- 8. FIND & FILTERING BEHAVIOUR ---
+findcontacts nonexistingsurname
+findstories nonexistingtopic
+findfollowups nonexistingkeyword
+
+# Filter contacts then run command with relative index
+findcontacts Charlotte
+# Attempt delete on relative index vs absolute index
+deletecontact 1
+listcontacts
+
+# --- 9. CLEAR & RECOVERY ---
+clear
+list

@@ -1,0 +1,27 @@
+[SUCCESS] clear
+PressMemo has been cleared!
+
+[SUCCESS] addcontact n/Alice p/91234567 e/alice@example.com a/Blk 1
+New contact added: Alice; Phone: 91234567; Email: alice@example.com; Address: Blk 1; Tags: ; Stories: 
+
+[SUCCESS] addcontact n/Bob p/98765432 e/bob@example.com a/Blk 2
+New contact added: Bob; Phone: 98765432; Email: bob@example.com; Address: Blk 2; Tags: ; Stories: 
+
+[SUCCESS] addstory General Election
+Story "General Election" has been added.
+
+[SUCCESS] assign ci/1 si/1
+Assigned Alice to General Election
+
+[SUCCESS] listcontacts si/1
+Listed 1 contact(s) assigned to General Election
+
+[SUCCESS] deletestory 1
+Deleted story: General Election; Contacts: [Alice]
+
+[SUCCESS] listcontacts
+Listed all 2 contact(s).
+
+[SUCCESS] clear
+PressMemo has been cleared!
+

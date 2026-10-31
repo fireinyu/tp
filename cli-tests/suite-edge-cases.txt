@@ -1,0 +1,99 @@
+# ==========================================
+# TEST SUITE: DEEP EDGE CASES & SYSTEM FLAWS
+# ==========================================
+
+# Setup fresh clean state with 1 contact and 1 story
+clear
+addcontact n/Original Contact p/91234567 e/orig@example.com a/Blk 1 Kent Ridge t/friend
+addstory Original Story t/urgent
+assign ci/1 si/1
+
+# Check initial links
+listcontacts
+liststories
+
+# --- 1. RELATIONSHIP CASCADE ON EDIT ---
+# Edit contact name: Does the story's contact reference update?
+editcontact 1 n/Renamed Contact
+liststories
+
+# Edit story name: Does the contact's story reference update?
+editstory 1 n/Renamed Story
+listcontacts
+
+# Delete story: Does contact's assigned stories list update or keep stale reference?
+deletestory 1
+listcontacts
+
+# --- 2. REGEX CHARACTERS IN SEARCH ---
+# Re-create story and contact
+addstory Regular Story (2026)
+addcontact n/Contact [Special] p/92345678 e/special@example.com a/Blk 2 Clementi
+findcontacts [Special]
+findcontacts *
+findcontacts (
+findstories (2026)
+findstories ?
+findstories +
+
+# --- 3. NUMERICAL OVERFLOW & DECIMAL INDICES ---
+# Integer.MAX_VALUE is 2147483647; test overflow with 2147483648
+deletecontact 2147483648
+editcontact 2147483648 n/Overflow
+deletestory 2147483648
+assign ci/2147483648 si/1
+assign ci/1 si/2147483648
+
+# Zero, negative, and decimal indices
+deletecontact 0
+deletecontact -1
+deletecontact 1.5
+deletestory 0
+deletestory -1
+deletestory 2.5
+listfollowups ci/0
+listfollowups ci/1.5
+
+# --- 4. EMPTY VALUE ARGUMENTS ---
+# Edit with empty names/prefixes
+editcontact 1 n/
+editstory 1 n/
+addcontact n/ p/91234567 e/test@example.com a/Street
+addstory
+
+# Clearing tags via empty tag prefix
+editcontact 1 t/
+listcontacts
+
+# --- 5. COMMAND CASING & WHITESPACE FORMATTING ---
+# Uppercase and mixed case command words
+LIST
+HELP
+AddContact n/Upper Test p/93456789 e/upper@example.com a/Blk 3
+FINDCONTACTS Renamed
+
+# Tabs instead of spaces between arguments
+addcontact	n/Tab Contact	p/94567890	e/tab@example.com	a/Blk 4 Tab St
+listcontacts
+
+# --- 6. DUPLICATE PHONE / EMAIL (DIFFERENT NAME) ---
+addcontact n/First Person p/95556666 e/shared@example.com a/Address 1
+# Same email, different name
+addcontact n/Second Person p/97778888 e/shared@example.com a/Address 2
+# Same phone, different name
+addcontact n/Third Person p/95556666 e/unique@example.com a/Address 3
+
+# --- 7. STORY WITH ONLY SPACES / SYMBOLS ---
+addstory    
+addstory !!!
+addstory @#$%
+addstory 12345
+
+# --- 8. SHORTCUT CYCLE & EXPLOITS ---
+shortcut s/loop1 c/loop2
+shortcut s/loop2 c/loop1
+loop1
+
+# Shortcut using punctuation/whitespace
+shortcut s/! c/list
+shortcut s/tab	c/list

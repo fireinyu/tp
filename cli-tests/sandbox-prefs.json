@@ -1,0 +1,16 @@
+{
+  "guiSettings" : {
+    "windowWidth" : 1016.0,
+    "windowHeight" : 1087.0,
+    "windowCoordinates" : {
+      "x" : -7,
+      "y" : 0
+    }
+  },
+  "shortcuts" : {
+    "shortcutToCommandWord" : {
+      "b" : "list",
+      "lc" : "listcontacts"
+    }
+  }
+}

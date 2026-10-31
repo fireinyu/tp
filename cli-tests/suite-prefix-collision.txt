@@ -1,0 +1,3 @@
+clear
+addcontact n/Alice p/91234567 e/alice@test.com a/Blk 123 n/a
+clear

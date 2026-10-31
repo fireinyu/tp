@@ -1,0 +1,28 @@
+clear
+addcontact n/Alice p/91234567 e/alice@example.com a/123 Jurong West t/friends
+addcontact n/Bob p/98765432 e/bob@example.com a/456 Clementi
+addstory Flood Investigation t/urgent
+addstory Budget 2026
+assign ci/1 si/1
+assign ci/2 si/1
+addfollowup Call Alice about witness interview ci/1
+addfollowup Send draft to Alice ci/1
+addfollowup Bob follow up notes ci/2
+listcontacts
+liststories
+listfollowups
+liststories ci/1
+listcontacts si/1
+listfollowups ci/1
+editcontact 1 n/Alice Smith
+listfollowups
+listcontacts si/1
+liststories ci/1
+deletecontact 1
+listcontacts
+liststories
+listfollowups
+liststories ci/1
+listcontacts si/1
+listfollowups ci/1
+clear

@@ -15,11 +15,13 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javafx.collections.ObservableList;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.exceptions.DataLoadingException;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.Logic;
 import seedu.address.logic.LogicManager;
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -29,6 +31,9 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.contact.Contact;
+import seedu.address.model.followup.Followup;
+import seedu.address.model.story.Story;
 import seedu.address.model.util.SampleDataUtil;
 import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
@@ -221,6 +226,8 @@ public class CliTestRunner {
                 writer.write(message);
                 writer.newLine();
                 writer.newLine();
+                writer.write(formatPanels(logic));
+                writer.newLine();
 
                 if (shouldExit && stopOnExit) {
                     out.println("Application exit requested. Halting further command execution.");
@@ -250,6 +257,51 @@ public class CliTestRunner {
         }
 
         return EXIT_CODE_SUCCESS;
+    }
+
+    /**
+     * Formats the contents of the contacts panel, stories panel, and followups panel.
+     *
+     * @param logic The application logic containing the filtered lists.
+     * @return Formatted string representing the contents of all three panels.
+     */
+    protected static String formatPanels(Logic logic) {
+        StringBuilder sb = new StringBuilder();
+        String lineSep = System.lineSeparator();
+
+        sb.append("Contacts Panel:").append(lineSep);
+        ObservableList<Contact> contacts = logic.getFilteredContactList();
+        if (contacts.isEmpty()) {
+            sb.append("(empty)").append(lineSep);
+        } else {
+            for (int i = 0; i < contacts.size(); i++) {
+                sb.append(i + 1).append(". ").append(Messages.format(contacts.get(i))).append(lineSep);
+            }
+        }
+        sb.append(lineSep);
+
+        sb.append("Stories Panel:").append(lineSep);
+        ObservableList<Story> stories = logic.getFilteredStoryList();
+        if (stories.isEmpty()) {
+            sb.append("(empty)").append(lineSep);
+        } else {
+            for (int i = 0; i < stories.size(); i++) {
+                sb.append(i + 1).append(". ").append(Messages.format(stories.get(i))).append(lineSep);
+            }
+        }
+        sb.append(lineSep);
+
+        sb.append("Followups Panel:").append(lineSep);
+        ObservableList<Followup> followups = logic.getFilteredFollowupList();
+        if (followups.isEmpty()) {
+            sb.append("(empty)").append(lineSep);
+        } else {
+            for (int i = 0; i < followups.size(); i++) {
+                sb.append(i + 1).append(". ").append(Messages.format(followups.get(i))).append(lineSep);
+            }
+        }
+
+        return sb.toString();
     }
 
     /**

@@ -1,0 +1,259 @@
+# ==========================================
+
+# TEST SUITE: DEEP EDGE CASES & SYSTEM FLAWS
+
+# ==========================================
+
+# Setup fresh clean state with 1 contact and 1 story
+
+[SUCCESS] clear
+PressMemo has been cleared!
+
+[SUCCESS] addcontact n/Original Contact p/91234567 e/orig@example.com a/Blk 1 Kent Ridge t/friend
+New contact added: Original Contact; Phone: 91234567; Email: orig@example.com; Address: Blk 1 Kent Ridge; Tags: [friend]; Stories: 
+
+[SUCCESS] addstory Original Story t/urgent
+Story "Original Story" has been added.
+
+[SUCCESS] assign ci/1 si/1
+Assigned Original Contact to Original Story
+
+# Check initial links
+
+[SUCCESS] listcontacts
+Listed all 1 contact(s).
+
+[SUCCESS] liststories
+Listed all 1 story(ies).
+
+# --- 1. RELATIONSHIP CASCADE ON EDIT ---
+
+# Edit contact name: Does the story's contact reference update?
+
+[SUCCESS] editcontact 1 n/Renamed Contact
+Edited contact: Renamed Contact; Phone: 91234567; Email: orig@example.com; Address: Blk 1 Kent Ridge; Tags: [friend]; Stories: [Original Story]
+
+[SUCCESS] liststories
+Listed all 1 story(ies).
+
+# Edit story name: Does the contact's story reference update?
+
+[SUCCESS] editstory 1 n/Renamed Story
+Edited story: Renamed Story; Tags: [urgent]; Contacts: [Renamed Contact]
+
+[SUCCESS] listcontacts
+Listed all 1 contact(s).
+
+# Delete story: Does contact's assigned stories list update or keep stale reference?
+
+[SUCCESS] deletestory 1
+Deleted story: Renamed Story; Tags: [urgent]; Contacts: [Renamed Contact]
+
+[SUCCESS] listcontacts
+Listed all 1 contact(s).
+
+# --- 2. REGEX CHARACTERS IN SEARCH ---
+
+# Re-create story and contact
+
+[SUCCESS] addstory Regular Story (2026)
+Story "Regular Story (2026)" has been added.
+
+[SUCCESS] addcontact n/Contact [Special] p/92345678 e/special@example.com a/Blk 2 Clementi
+New contact added: Contact [Special]; Phone: 92345678; Email: special@example.com; Address: Blk 2 Clementi; Tags: ; Stories: 
+
+[SUCCESS] findcontacts [Special]
+1 contact(s) listed!
+
+[SUCCESS] findcontacts *
+0 contact(s) listed!
+
+[SUCCESS] findcontacts (
+0 contact(s) listed!
+
+[SUCCESS] findstories (2026)
+1 story(ies) listed!
+
+[SUCCESS] findstories ?
+0 story(ies) listed!
+
+[SUCCESS] findstories +
+0 story(ies) listed!
+
+# --- 3. NUMERICAL OVERFLOW & DECIMAL INDICES ---
+
+# Integer.MAX_VALUE is 2147483647; test overflow with 2147483648
+
+[ERROR] deletecontact 2147483648
+Invalid command format!
+deletecontact: Deletes the contact identified by the index number used in the displayed contact list.
+Parameters: INDEX (must be a positive integer)
+Example: deletecontact 1
+
+[ERROR] editcontact 2147483648 n/Overflow
+Invalid command format!
+editcontact: Edits the details of the contact identified by the index number used in the displayed contact list. Existing values will be overwritten by the input values.
+Parameters: INDEX (must be a positive integer) [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...
+Example: editcontact 1 p/91234567 e/johndoe@example.com
+
+[ERROR] deletestory 2147483648
+Invalid command format!
+deletestory: Deletes the story identified by the index number used in the displayed story list.
+Parameters: INDEX (must be a positive integer)
+Example: deletestory 1
+
+[ERROR] assign ci/2147483648 si/1
+Index must be a positive integer.
+
+[ERROR] assign ci/1 si/2147483648
+Index must be a positive integer.
+
+# Zero, negative, and decimal indices
+
+[ERROR] deletecontact 0
+Invalid command format!
+deletecontact: Deletes the contact identified by the index number used in the displayed contact list.
+Parameters: INDEX (must be a positive integer)
+Example: deletecontact 1
+
+[ERROR] deletecontact -1
+Invalid command format!
+deletecontact: Deletes the contact identified by the index number used in the displayed contact list.
+Parameters: INDEX (must be a positive integer)
+Example: deletecontact 1
+
+[ERROR] deletecontact 1.5
+Invalid command format!
+deletecontact: Deletes the contact identified by the index number used in the displayed contact list.
+Parameters: INDEX (must be a positive integer)
+Example: deletecontact 1
+
+[ERROR] deletestory 0
+Invalid command format!
+deletestory: Deletes the story identified by the index number used in the displayed story list.
+Parameters: INDEX (must be a positive integer)
+Example: deletestory 1
+
+[ERROR] deletestory -1
+Invalid command format!
+deletestory: Deletes the story identified by the index number used in the displayed story list.
+Parameters: INDEX (must be a positive integer)
+Example: deletestory 1
+
+[ERROR] deletestory 2.5
+Invalid command format!
+deletestory: Deletes the story identified by the index number used in the displayed story list.
+Parameters: INDEX (must be a positive integer)
+Example: deletestory 1
+
+[ERROR] listfollowups ci/0
+Index must be a positive integer.
+
+[ERROR] listfollowups ci/1.5
+Index must be a positive integer.
+
+# --- 4. EMPTY VALUE ARGUMENTS ---
+
+# Edit with empty names/prefixes
+
+[ERROR] editcontact 1 n/
+Names can take any values except forward slash (/), and should not be blank
+
+[ERROR] editstory 1 n/
+Names can take any values except forward slash (/), and should not be blank
+
+[ERROR] addcontact n/ p/91234567 e/test@example.com a/Street
+Names can take any values except forward slash (/), and should not be blank
+
+[ERROR] addstory
+Invalid command format!
+addstory: Adds a story to PressMemo. Parameters: NAME [t/TAG]...
+Example: addstory hellot/ Singapore
+
+# Clearing tags via empty tag prefix
+
+[ERROR] editcontact 1 t/
+The contact index provided is invalid.
+
+[SUCCESS] listcontacts
+Listed all 2 contact(s).
+
+# --- 5. COMMAND CASING & WHITESPACE FORMATTING ---
+
+# Uppercase and mixed case command words
+
+[ERROR] LIST
+Unknown command.
+
+[ERROR] HELP
+Unknown command.
+
+[ERROR] AddContact n/Upper Test p/93456789 e/upper@example.com a/Blk 3
+Unknown command.
+
+[ERROR] FINDCONTACTS Renamed
+Unknown command.
+
+# Tabs instead of spaces between arguments
+
+[ERROR] addcontact	n/Tab Contact	p/94567890	e/tab@example.com	a/Blk 4 Tab St
+Invalid command format!
+addcontact: Adds a contact to PressMemo. Parameters: n/NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]...
+Example: addcontact n/John Doe p/98765432 e/johnd@example.com a/311, Clementi Ave 2, #02-25 t/friends t/owesMoney
+
+[SUCCESS] listcontacts
+Listed all 2 contact(s).
+
+# --- 6. DUPLICATE PHONE / EMAIL (DIFFERENT NAME) ---
+
+[SUCCESS] addcontact n/First Person p/95556666 e/shared@example.com a/Address 1
+New contact added: First Person; Phone: 95556666; Email: shared@example.com; Address: Address 1; Tags: ; Stories: 
+
+# Same email, different name
+
+[SUCCESS] addcontact n/Second Person p/97778888 e/shared@example.com a/Address 2
+New contact added: Second Person; Phone: 97778888; Email: shared@example.com; Address: Address 2; Tags: ; Stories: 
+
+# Same phone, different name
+
+[SUCCESS] addcontact n/Third Person p/95556666 e/unique@example.com a/Address 3
+New contact added: Third Person; Phone: 95556666; Email: unique@example.com; Address: Address 3; Tags: ; Stories: 
+
+# --- 7. STORY WITH ONLY SPACES / SYMBOLS ---
+
+[ERROR] addstory
+Invalid command format!
+addstory: Adds a story to PressMemo. Parameters: NAME [t/TAG]...
+Example: addstory hellot/ Singapore
+
+[SUCCESS] addstory !!!
+Story "!!!" has been added.
+
+[SUCCESS] addstory @#$%
+Story "@#$%" has been added.
+
+[SUCCESS] addstory 12345
+Story "12345" has been added.
+
+# --- 8. SHORTCUT CYCLE & EXPLOITS ---
+
+[ERROR] shortcut s/loop1 c/loop2
+'loop2' is not a command that can be assigned a shortcut.
+
+[ERROR] shortcut s/loop2 c/loop1
+'loop1' is not a command that can be assigned a shortcut.
+
+[ERROR] loop1
+Unknown command.
+
+# Shortcut using punctuation/whitespace
+
+[ERROR] shortcut s/! c/list
+Shortcut '!' is invalid. Shortcuts must start with a lowercase letter and contain only lowercase letters and digits.
+
+[ERROR] shortcut s/tab	c/list
+Invalid command format!
+shortcut: Assigns a shortcut to a command, or lists all shortcuts when used without parameters.
+Parameters: s/SHORTCUT c/COMMAND_WORD
+Example: shortcut s/ls c/list
+

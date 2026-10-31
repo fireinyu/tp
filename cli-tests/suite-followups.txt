@@ -1,0 +1,28 @@
+# Test followup edge cases
+clear
+addcontact n/Reporter Alice p/91234567 e/alice@press.com a/Office
+addcontact n/Reporter Bob p/92345678 e/bob@press.com a/Office
+
+# Add followup to Alice
+addfollowup Call witness ci/1
+
+# Duplicate followup for same contact
+addfollowup Call witness ci/1
+
+# Same followup description for DIFFERENT contact (Bob)
+addfollowup Call witness ci/2
+
+# Edit followup 1 to duplicate followup of Alice
+editfollowup 1 d/Call witness
+
+# Edit followup 2 (Bob's) to point to Alice with description 'Call witness' (should collide with followup 1!)
+editfollowup 2 ci/1
+
+# Edit with no fields provided
+editfollowup 1
+
+# Edit non-existent followup index
+editfollowup 999 d/New task
+
+# Edit with non-existent contact index
+editfollowup 1 ci/999

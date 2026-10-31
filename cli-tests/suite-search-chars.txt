@@ -1,0 +1,14 @@
+clear
+addcontact n/Alice Tan p/91234567 e/alice@example.com a/Blk 1
+addcontact n/Bob Lim-Tan p/98765432 e/bob@example.com a/Blk 2
+addcontact n/Charlie (Junior) p/93333333 e/c@example.com a/Blk 3
+findcontacts Alice Tan
+findcontacts Tan
+findcontacts Lim-Tan
+findcontacts Lim
+findcontacts Charlie
+findcontacts Junior
+findcontacts (Junior)
+findcontacts *
+findcontacts .
+clear

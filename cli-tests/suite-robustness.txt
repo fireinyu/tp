@@ -1,0 +1,35 @@
+clear
+shortcut
+shortcut s/ac c/addcontact
+shortcut s/sc c/shortcut
+shortcut s/usc c/unshortcut
+shortcut s/lc c/listcontacts
+shortcut s/123 c/listcontacts
+shortcut s/deletecontact c/listcontacts
+shortcut s/bad c/unknowncmd
+unshortcut nonexistent
+unshortcut ac
+shortcut
+addcontact n/Alice p/91234567 e/alice@example.com a/Blk 1
+addstory Tech News
+assign ci/1 si/1
+assign ci/1 si/1
+unassign ci/1 si/1
+unassign ci/1 si/1
+editcontact 1
+editstory 1
+editfollowup 1
+deletecontact 0
+deletecontact -1
+deletecontact 2147483648
+deletecontact 9999999999999999999999
+deletestory 0
+deletefollowup 0
+addcontact n/John/Doe p/91234567 e/j@d.com a/Blk 1
+addcontact n/John Doe p/91234567 e/j@d.com a/Blk 123/45
+addcontact n/John Doe p/91234567 e/j@d.com a/Blk 1 t/tag/one
+addstory Broken/Slash
+addfollowup Call/Witness ci/1
+addcontact n/TagTest p/91234567 e/t@t.com a/Blk 1 t/
+addstory StoryTagTest t/
+clear

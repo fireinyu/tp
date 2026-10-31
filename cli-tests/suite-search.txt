@@ -1,0 +1,22 @@
+# Test Search Matching Semantics
+clear
+addcontact n/Alice Smith p/91234567 e/alice@smith.com a/Blk 1
+addcontact n/Bob Tan p/92345678 e/bob@tan.com a/Blk 2
+
+# Multiple keywords
+findcontacts Alice Bob
+
+# Substring / partial match
+findcontacts Ali
+findcontacts Smi
+
+# Empty keyword or whitespace keyword
+findcontacts
+findcontacts   
+
+# Stories search
+addstory Climate Crisis Report
+addstory Economic Update 2026
+findstories Climate Economic
+findstories Clim
+findstories   

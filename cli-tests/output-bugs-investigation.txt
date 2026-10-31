@@ -1,0 +1,116 @@
+# ==========================================
+
+# TEST SUITE: TARGETED BUG INVESTIGATION
+
+# ==========================================
+
+[SUCCESS] clear
+PressMemo has been cleared!
+
+# --- BUG 1: Contact format dangling empty tags & stories ---
+
+[SUCCESS] addcontact n/Clean Contact p/91234567 e/clean@example.com a/Clean Address
+New contact added: Clean Contact; Phone: 91234567; Email: clean@example.com; Address: Clean Address; Tags: ; Stories: 
+
+[SUCCESS] deletecontact 1
+Deleted contact: Clean Contact; Phone: 91234567; Email: clean@example.com; Address: Clean Address; Tags: ; Stories: 
+
+# --- BUG 2: Email validation regex too permissive ---
+
+[SUCCESS] addcontact n/Test Email 1 p/91234567 e/user@domain..com a/Address
+New contact added: Test Email 1; Phone: 91234567; Email: user@domain..com; Address: Address; Tags: ; Stories: 
+
+[SUCCESS] addcontact n/Test Email 2 p/91234567 e/user@. a/Address
+New contact added: Test Email 2; Phone: 91234567; Email: user@.; Address: Address; Tags: ; Stories: 
+
+[SUCCESS] addcontact n/Test Email 3 p/91234567 e/user@domain a/Address
+New contact added: Test Email 3; Phone: 91234567; Email: user@domain; Address: Address; Tags: ; Stories: 
+
+[SUCCESS] addcontact n/Test Email 4 p/91234567 e/!#$%@&* a/Address
+New contact added: Test Email 4; Phone: 91234567; Email: !#$%@&*; Address: Address; Tags: ; Stories: 
+
+[SUCCESS] addcontact n/Test Email 5 p/91234567 e/user@localhost a/Address
+New contact added: Test Email 5; Phone: 91234567; Email: user@localhost; Address: Address; Tags: ; Stories: 
+
+# --- BUG 3: AddStoryCommand typo in help/usage message ---
+
+[ERROR] addstory
+Invalid command format!
+addstory: Adds a story to PressMemo. Parameters: NAME [t/TAG]...
+Example: addstory hellot/ Singapore
+
+# --- BUG 4: Inconsistent duplicate story error message ---
+
+[SUCCESS] addstory Tech News
+Story "Tech News" has been added.
+
+[ERROR] addstory Tech News
+Error: there is already a story named "Tech News"!
+
+[SUCCESS] editstory 1 n/Tech News
+Edited story: Tech News
+
+# --- BUG 5: Case-variant duplicate contacts & stories ---
+
+[SUCCESS] addcontact n/David Beckham p/91112222 e/david@example.com a/Manchester
+New contact added: David Beckham; Phone: 91112222; Email: david@example.com; Address: Manchester; Tags: ; Stories: 
+
+[SUCCESS] addcontact n/david beckham p/93334444 e/dbeckham@example.com a/London
+New contact added: david beckham; Phone: 93334444; Email: dbeckham@example.com; Address: London; Tags: ; Stories: 
+
+[SUCCESS] findcontacts David
+2 contact(s) listed!
+
+[SUCCESS] addstory World Cup
+Story "World Cup" has been added.
+
+[SUCCESS] addstory world cup
+Story "world cup" has been added.
+
+[SUCCESS] findstories world
+2 story(ies) listed!
+
+# --- BUG 6: Deleting contact assigned to story ---
+
+# Check if deleted contact is removed from story's contact list
+
+[SUCCESS] clear
+PressMemo has been cleared!
+
+[SUCCESS] addcontact n/Reporter Alice p/91111111 e/alice@press.com a/Office
+New contact added: Reporter Alice; Phone: 91111111; Email: alice@press.com; Address: Office; Tags: ; Stories: 
+
+[SUCCESS] addstory Scoop 2026
+Story "Scoop 2026" has been added.
+
+[SUCCESS] assign ci/1 si/1
+Assigned Reporter Alice to Scoop 2026
+
+[SUCCESS] liststories
+Listed all 1 story(ies).
+
+[SUCCESS] deletecontact 1
+Deleted contact: Reporter Alice; Phone: 91111111; Email: alice@press.com; Address: Office; Tags: ; Stories: [Scoop 2026]
+
+[SUCCESS] liststories
+Listed all 1 story(ies).
+
+# --- BUG 7: Deleting story assigned to contact ---
+
+# Check if deleted story is removed from contact's story list
+
+[SUCCESS] addcontact n/Reporter Bob p/92222222 e/bob@press.com a/Office
+New contact added: Reporter Bob; Phone: 92222222; Email: bob@press.com; Address: Office; Tags: ; Stories: 
+
+[SUCCESS] assign ci/1 si/1
+Assigned Reporter Bob to Scoop 2026
+
+[SUCCESS] listcontacts
+Listed all 1 contact(s).
+
+[SUCCESS] deletestory 1
+Deleted story: Scoop 2026; Contacts: [Reporter Bob]
+
+[SUCCESS] listcontacts
+Listed all 1 contact(s).
+

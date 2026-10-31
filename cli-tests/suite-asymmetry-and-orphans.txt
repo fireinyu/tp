@@ -1,0 +1,8 @@
+clear
+addstory Climate Crisis t/environment
+addstory n/Breaking News
+addfollowup Interview CEO ci/1
+addfollowup d/Follow up with minister ci/1
+liststories
+listfollowups
+clear

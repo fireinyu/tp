@@ -1,0 +1,315 @@
+# ==========================================
+
+# TEST SUITE: PRESSMEMO FUNCTIONALITY & FLAWS
+
+# ==========================================
+
+# --- 1. BASIC COMMANDS & LISTING ---
+
+[SUCCESS] list
+Listed all 6 contact(s), 1 story(ies) and 1 followup(s).
+
+[SUCCESS] listcontacts
+Listed all 6 contact(s).
+
+[SUCCESS] liststories
+Listed all 1 story(ies).
+
+[SUCCESS] listfollowups
+Listed all 1 followup(s).
+
+# --- 2. CONTACT MANAGEMENT & CONSTRAINTS ---
+
+# Valid contact creation
+
+[SUCCESS] addcontact n/Alice Smith p/91234567 e/alice@example.com a/123 Kent Ridge Rd t/journalist
+New contact added: Alice Smith; Phone: 91234567; Email: alice@example.com; Address: 123 Kent Ridge Rd; Tags: [journalist]; Stories: 
+
+# Duplicate contact (exact match)
+
+[ERROR] addcontact n/Alice Smith p/91234567 e/alice@example.com a/123 Kent Ridge Rd t/journalist
+This contact already exists in PressMemo.
+
+# Duplicate contact (case variation in name)
+
+[SUCCESS] addcontact n/alice smith p/99998888 e/alicesmith@example.com a/Another Address
+New contact added: alice smith; Phone: 99998888; Email: alicesmith@example.com; Address: Another Address; Tags: ; Stories: 
+
+# Invalid phone numbers (symbols, letters, too short/long)
+
+[ERROR] addcontact n/Bob Tan p/12 e/bob@example.com a/Blk 123 Tampines
+Phone numbers should only contain digits, and should be between 3 and 15 digits long
+
+[ERROR] addcontact n/Bob Tan p/9123-4567 e/bob@example.com a/Blk 123 Tampines
+Phone numbers should only contain digits, and should be between 3 and 15 digits long
+
+[ERROR] addcontact n/Bob Tan p/+6591234567 e/bob@example.com a/Blk 123 Tampines
+Phone numbers should only contain digits, and should be between 3 and 15 digits long
+
+# Invalid email addresses
+
+[ERROR] addcontact n/Bob Tan p/91234567 e/bob@@example.com a/Blk 123 Tampines
+Emails should be of the format word@word, where word is a user string that does not contain spaces
+
+[SUCCESS] addcontact n/Bob Tan p/91234567 e/bob@example..com a/Blk 123 Tampines
+New contact added: Bob Tan; Phone: 91234567; Email: bob@example..com; Address: Blk 123 Tampines; Tags: ; Stories: 
+
+[ERROR] addcontact n/Bob Tan p/91234567 e/bob a/Blk 123 Tampines
+Emails should be of the format word@word, where word is a user string that does not contain spaces
+
+# Names with symbols (e.g. hyphens, apostrophes, parentheses, slashes)
+
+[SUCCESS] addcontact n/Mary-Jane O'Connor p/98887777 e/maryjane@example.com a/Orchard Rd
+New contact added: Mary-Jane O'Connor; Phone: 98887777; Email: maryjane@example.com; Address: Orchard Rd; Tags: ; Stories: 
+
+[SUCCESS] addcontact n/John Doe (Intern) p/98887776 e/johnintern@example.com a/Clementi
+New contact added: John Doe (Intern); Phone: 98887776; Email: johnintern@example.com; Address: Clementi; Tags: ; Stories: 
+
+# Preamble errors & duplicate prefixes
+
+[ERROR] addcontact extra_preamble n/Test User p/98765432 e/test@example.com a/Street
+Invalid command format!
+addcontact: Adds a contact to PressMemo. Parameters: n/NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]...
+Example: addcontact n/John Doe p/98765432 e/johnd@example.com a/311, Clementi Ave 2, #02-25 t/friends t/owesMoney
+
+[ERROR] addcontact n/User One n/User Two p/98765432 e/test@example.com a/Street
+Multiple values specified for the following single-valued field(s): n/
+
+# --- 3. STORY MANAGEMENT & CONSTRAINTS ---
+
+# Valid story creation
+
+[SUCCESS] addstory Breaking News 2026 t/breaking
+Story "Breaking News 2026" has been added.
+
+# Duplicate story (exact match)
+
+[ERROR] addstory Breaking News 2026
+Error: there is already a story named "Breaking News 2026"!
+
+# Duplicate story (case-variant)
+
+[SUCCESS] addstory breaking news 2026
+Story "breaking news 2026" has been added.
+
+# Story name with symbols: slash '/'
+
+[ERROR] addstory Investigation 2025/2026
+Names can take any values except forward slash (/), and should not be blank
+
+# Story name with symbols: parentheses '()', hyphens '-', quotes '\"'
+
+[SUCCESS] addstory Election Special (Part 1)
+Story "Election Special (Part 1)" has been added.
+
+[SUCCESS] addstory COVID-19 Recovery Report
+Story "COVID-19 Recovery Report" has been added.
+
+[SUCCESS] addstory "Exclusive" Report
+Story ""Exclusive" Report" has been added.
+
+# Edit story to duplicate name
+
+[ERROR] editstory 1 n/Breaking News 2026
+This story already exists in PressMemo.
+
+# Edit story with non-existent index
+
+[ERROR] editstory 999 n/Nonexistent
+The story index provided is invalid.
+
+# Delete story formatting check
+
+[SUCCESS] deletestory 1
+Deleted story: fow; Contacts: [meo][burn you]
+
+# --- 4. ASSIGNMENT & RELATIONSHIPS ---
+
+# Re-list to see current state
+
+[SUCCESS] list
+Listed all 11 contact(s), 5 story(ies) and 1 followup(s).
+
+# Assign contact to story
+
+[SUCCESS] assign ci/1 si/1
+Assigned meo to Breaking News 2026
+
+# Duplicate assignment
+
+[ERROR] assign ci/1 si/1
+meo is already assigned to Breaking News 2026.
+
+# Assign with invalid indices
+
+[ERROR] assign ci/999 si/1
+The contact index provided is invalid.
+
+[ERROR] assign ci/1 si/999
+The story index provided is invalid.
+
+[ERROR] assign ci/0 si/1
+Index must be a positive integer.
+
+[ERROR] assign ci/-1 si/1
+Index must be a positive integer.
+
+# Unassign valid
+
+[SUCCESS] unassign ci/1 si/1
+Unassigned meo from Breaking News 2026
+
+# Unassign when not assigned
+
+[ERROR] unassign ci/1 si/1
+meo is not assigned to Breaking News 2026.
+
+# --- 5. FOLLOWUPS ---
+
+# Add followup to existing contact
+
+[SUCCESS] addfollowup Interview CEO ci/1
+Followup Interview CEO has been added to meo.
+
+# Add followup with empty description / invalid index
+
+[ERROR] addfollowup ci/1
+Invalid command format!
+addfollowup: Adds a followup to a contact in PressMemo. Parameters: DESCRIPTION ci/CONTACT_INDEX
+Example: addfollowup meeting ci/1
+
+[ERROR] addfollowup Interview CEO ci/999
+The contact index provided is invalid.
+
+# List followups for contact with 0 followups vs with followups
+
+[SUCCESS] listfollowups ci/3
+Listed 0 followup(s) assigned to Charlotte Oliveiro
+
+[SUCCESS] listfollowups ci/1
+Listed 1 followup(s) assigned to meo
+
+[ERROR] listfollowups ci/999
+The contact index provided is invalid.
+
+# Delete followup with invalid index
+
+[ERROR] deletefollowup 999
+The followup index provided is invalid.
+
+# Delete existing followup
+
+[SUCCESS] deletefollowup 1
+Deleted followup: Interview CEO; Contact: meo
+
+# --- 6. CASCADING DELETION INTEGRITY ---
+
+# Re-add story and followup, assign to contact, then delete contact
+
+[SUCCESS] addstory Tech Scandal
+Story "Tech Scandal" has been added.
+
+[SUCCESS] assign ci/1 si/1
+Assigned meo to Breaking News 2026
+
+[SUCCESS] addfollowup Contact Source ci/1
+Followup Contact Source has been added to meo.
+
+# List to verify links
+
+[SUCCESS] list
+Listed all 11 contact(s), 6 story(ies) and 2 followup(s).
+
+# Delete contact 1 (which has story and followup assigned)
+
+[SUCCESS] deletecontact 1
+Deleted contact: meo; Phone: 87438807; Email: alexyeoh@example.com; Address: Blk 30 Geylang Street 29, #06-40; Tags: [friends]; Stories: [Breaking News 2026]
+
+# Check if stories or followups still reference deleted contact
+
+[SUCCESS] liststories
+Listed all 6 story(ies).
+
+[SUCCESS] listfollowups
+Listed all 1 followup(s).
+
+# --- 7. SHORTCUTS ---
+
+# List shortcuts
+
+[SUCCESS] shortcut
+No command shortcuts assigned.
+
+# Add shortcut
+
+[SUCCESS] shortcut s/lc c/listcontacts
+Shortcut 'lc' assigned to command 'listcontacts'.
+
+# Execute shortcut
+
+[SUCCESS] lc
+Listed all 10 contact(s).
+
+# Override existing command with shortcut
+
+[ERROR] shortcut s/list c/help
+'list' is a built-in command word and cannot be used as a shortcut.
+
+# Shortcut referencing non-existent command
+
+[ERROR] shortcut s/bad c/nonexistentcommand
+'nonexistentcommand' is not a command that can be assigned a shortcut.
+
+# Chained/recursive shortcuts
+
+[ERROR] shortcut s/a c/b
+'b' is not a command that can be assigned a shortcut.
+
+[SUCCESS] shortcut s/b c/list
+Shortcut 'b' assigned to command 'list'.
+
+[ERROR] a
+Unknown command.
+
+# Unshortcut non-existent
+
+[ERROR] unshortcut invalid_sc
+Shortcut 'invalid_sc' does not exist.
+
+# Unshortcut valid
+
+[SUCCESS] unshortcut lc
+Shortcut 'lc' removed.
+
+# --- 8. FIND & FILTERING BEHAVIOUR ---
+
+[SUCCESS] findcontacts nonexistingsurname
+0 contact(s) listed!
+
+[SUCCESS] findstories nonexistingtopic
+0 story(ies) listed!
+
+[SUCCESS] findfollowups nonexistingkeyword
+0 followup(s) listed!
+
+# Filter contacts then run command with relative index
+
+[SUCCESS] findcontacts Charlotte
+1 contact(s) listed!
+
+# Attempt delete on relative index vs absolute index
+
+[SUCCESS] deletecontact 1
+Deleted contact: Charlotte Oliveiro; Phone: 93210283; Email: charlotte@example.com; Address: Blk 11 Ang Mo Kio Street 74, #11-04; Tags: [neighbours]; Stories: 
+
+[SUCCESS] listcontacts
+Listed all 9 contact(s).
+
+# --- 9. CLEAR & RECOVERY ---
+
+[SUCCESS] clear
+PressMemo has been cleared!
+
+[SUCCESS] list
+Listed all 0 contact(s), 0 story(ies) and 0 followup(s).
+

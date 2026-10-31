@@ -1,0 +1,50 @@
+# ==========================================
+# TEST SUITE: TARGETED BUG INVESTIGATION
+# ==========================================
+
+clear
+
+# --- BUG 1: Contact format dangling empty tags & stories ---
+addcontact n/Clean Contact p/91234567 e/clean@example.com a/Clean Address
+deletecontact 1
+
+# --- BUG 2: Email validation regex too permissive ---
+addcontact n/Test Email 1 p/91234567 e/user@domain..com a/Address
+addcontact n/Test Email 2 p/91234567 e/user@. a/Address
+addcontact n/Test Email 3 p/91234567 e/user@domain a/Address
+addcontact n/Test Email 4 p/91234567 e/!#$%@&* a/Address
+addcontact n/Test Email 5 p/91234567 e/user@localhost a/Address
+
+# --- BUG 3: AddStoryCommand typo in help/usage message ---
+addstory
+
+# --- BUG 4: Inconsistent duplicate story error message ---
+addstory Tech News
+addstory Tech News
+editstory 1 n/Tech News
+
+# --- BUG 5: Case-variant duplicate contacts & stories ---
+addcontact n/David Beckham p/91112222 e/david@example.com a/Manchester
+addcontact n/david beckham p/93334444 e/dbeckham@example.com a/London
+findcontacts David
+addstory World Cup
+addstory world cup
+findstories world
+
+# --- BUG 6: Deleting contact assigned to story ---
+# Check if deleted contact is removed from story's contact list
+clear
+addcontact n/Reporter Alice p/91111111 e/alice@press.com a/Office
+addstory Scoop 2026
+assign ci/1 si/1
+liststories
+deletecontact 1
+liststories
+
+# --- BUG 7: Deleting story assigned to contact ---
+# Check if deleted story is removed from contact's story list
+addcontact n/Reporter Bob p/92222222 e/bob@press.com a/Office
+assign ci/1 si/1
+listcontacts
+deletestory 1
+listcontacts

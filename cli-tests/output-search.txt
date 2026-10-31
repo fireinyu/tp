@@ -1,0 +1,58 @@
+# Test Search Matching Semantics
+
+[SUCCESS] clear
+PressMemo has been cleared!
+
+[SUCCESS] addcontact n/Alice Smith p/91234567 e/alice@smith.com a/Blk 1
+New contact added: Alice Smith; Phone: 91234567; Email: alice@smith.com; Address: Blk 1; Tags: ; Stories: 
+
+[SUCCESS] addcontact n/Bob Tan p/92345678 e/bob@tan.com a/Blk 2
+New contact added: Bob Tan; Phone: 92345678; Email: bob@tan.com; Address: Blk 2; Tags: ; Stories: 
+
+# Multiple keywords
+
+[SUCCESS] findcontacts Alice Bob
+2 contact(s) listed!
+
+# Substring / partial match
+
+[SUCCESS] findcontacts Ali
+0 contact(s) listed!
+
+[SUCCESS] findcontacts Smi
+0 contact(s) listed!
+
+# Empty keyword or whitespace keyword
+
+[ERROR] findcontacts
+Invalid command format!
+findcontacts: Finds all contacts whose names contain any of the specified keywords (case-insensitive) and displays them as a list with index numbers.
+Parameters: KEYWORD [MORE_KEYWORDS]...
+Example: findcontacts alice bob charlie
+
+[ERROR] findcontacts
+Invalid command format!
+findcontacts: Finds all contacts whose names contain any of the specified keywords (case-insensitive) and displays them as a list with index numbers.
+Parameters: KEYWORD [MORE_KEYWORDS]...
+Example: findcontacts alice bob charlie
+
+# Stories search
+
+[SUCCESS] addstory Climate Crisis Report
+Story "Climate Crisis Report" has been added.
+
+[SUCCESS] addstory Economic Update 2026
+Story "Economic Update 2026" has been added.
+
+[SUCCESS] findstories Climate Economic
+2 story(ies) listed!
+
+[SUCCESS] findstories Clim
+0 story(ies) listed!
+
+[ERROR] findstories
+Invalid command format!
+findstories: Finds all stories whose names contain any of the specified keywords (case-insensitive).
+Parameters: STORY_NAME [MORE_KEYWORDS]...
+Example: findstories housing investigation
+

@@ -1,0 +1,5 @@
+# Testing if the documented example in AddStoryCommand actually works
+
+[ERROR] addstory hellot/ Singapore
+Names can take any values except forward slash (/), and should not be blank
+

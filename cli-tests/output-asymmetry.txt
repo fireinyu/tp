@@ -1,0 +1,24 @@
+[SUCCESS] clear
+PressMemo has been cleared!
+
+[SUCCESS] addstory Climate Crisis t/environment
+Story "Climate Crisis" has been added.
+
+[ERROR] addstory n/Breaking News
+Names can take any values except forward slash (/), and should not be blank
+
+[ERROR] addfollowup Interview CEO ci/1
+The contact index provided is invalid.
+
+[ERROR] addfollowup d/Follow up with minister ci/1
+Descriptions can take any values except forward slash (/), and should not be blank
+
+[SUCCESS] liststories
+Listed all 1 story(ies).
+
+[SUCCESS] listfollowups
+Listed all 0 followup(s).
+
+[SUCCESS] clear
+PressMemo has been cleared!
+

@@ -1,0 +1,51 @@
+# Test followup edge cases
+
+[SUCCESS] clear
+PressMemo has been cleared!
+
+[SUCCESS] addcontact n/Reporter Alice p/91234567 e/alice@press.com a/Office
+New contact added: Reporter Alice; Phone: 91234567; Email: alice@press.com; Address: Office; Tags: ; Stories: 
+
+[SUCCESS] addcontact n/Reporter Bob p/92345678 e/bob@press.com a/Office
+New contact added: Reporter Bob; Phone: 92345678; Email: bob@press.com; Address: Office; Tags: ; Stories: 
+
+# Add followup to Alice
+
+[SUCCESS] addfollowup Call witness ci/1
+Followup Call witness has been added to Reporter Alice.
+
+# Duplicate followup for same contact
+
+[ERROR] addfollowup Call witness ci/1
+This followup already exists for Reporter Alice.
+
+# Same followup description for DIFFERENT contact (Bob)
+
+[SUCCESS] addfollowup Call witness ci/2
+Followup Call witness has been added to Reporter Bob.
+
+# Edit followup 1 to duplicate followup of Alice
+
+[SUCCESS] editfollowup 1 d/Call witness
+Edited followup: Call witness; Contact: Reporter Alice
+
+# Edit followup 2 (Bob's) to point to Alice with description 'Call witness' (should collide with followup 1!)
+
+[ERROR] editfollowup 2 ci/1
+This followup already exists for this contact.
+
+# Edit with no fields provided
+
+[ERROR] editfollowup 1
+At least one field to edit must be provided.
+
+# Edit non-existent followup index
+
+[ERROR] editfollowup 999 d/New task
+The followup index provided is invalid.
+
+# Edit with non-existent contact index
+
+[ERROR] editfollowup 1 ci/999
+The contact index provided is invalid.
+

@@ -122,10 +122,45 @@ public class CliTestRunnerTest {
         assertTrue(outputContent.contains("Unknown command."));
         assertTrue(outputContent.contains("[ERROR] deletecontact 9999"));
         assertTrue(outputContent.contains("The contact index provided is invalid."));
+        assertTrue(outputContent.contains("Contacts Panel:"));
+        assertTrue(outputContent.contains("Stories Panel:"));
+        assertTrue(outputContent.contains("Followups Panel:"));
+        assertTrue(outputContent.contains("Alex Yeoh"));
 
         assertTrue(outContent.toString().contains("Total commands executed: 4"));
         assertTrue(outContent.toString().contains("Succeeded: 2"));
         assertTrue(outContent.toString().contains("Failed   : 2"));
+    }
+
+    @Test
+    public void run_clearCommand_displaysEmptyPanels() throws IOException {
+        Path input = temporaryFolder.resolve("commands.txt");
+        Path output = temporaryFolder.resolve("results.txt");
+        Path data = temporaryFolder.resolve("addressbook.json");
+        Path prefs = temporaryFolder.resolve("preferences.json");
+
+        List<String> commandLines = List.of("clear");
+        Files.write(input, commandLines, StandardCharsets.UTF_8);
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(outContent);
+        PrintStream err = new PrintStream(errContent);
+
+        int exitCode = CliTestRunner.run(new String[] {
+            "--data", data.toString(),
+            "--prefs", prefs.toString(),
+            input.toString(),
+            output.toString()
+        }, out, err);
+
+        assertEquals(CliTestRunner.EXIT_CODE_SUCCESS, exitCode);
+        String outputContent = Files.readString(output, StandardCharsets.UTF_8);
+        assertTrue(outputContent.contains("[SUCCESS] clear"));
+        String lineSep = System.lineSeparator();
+        assertTrue(outputContent.contains("Contacts Panel:" + lineSep + "(empty)"));
+        assertTrue(outputContent.contains("Stories Panel:" + lineSep + "(empty)"));
+        assertTrue(outputContent.contains("Followups Panel:" + lineSep + "(empty)"));
     }
 
     @Test

@@ -1,0 +1,9 @@
+[SUCCESS] clear
+PressMemo has been cleared!
+
+[ERROR] addcontact n/Alice p/91234567 e/alice@test.com a/Blk 123 n/a
+Multiple values specified for the following single-valued field(s): n/
+
+[SUCCESS] clear
+PressMemo has been cleared!
+

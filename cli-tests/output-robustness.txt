@@ -1,0 +1,126 @@
+[SUCCESS] clear
+PressMemo has been cleared!
+
+[SUCCESS] shortcut
+Command shortcuts:
+b -> list
+
+[SUCCESS] shortcut s/ac c/addcontact
+Shortcut 'ac' assigned to command 'addcontact'.
+
+[ERROR] shortcut s/sc c/shortcut
+'shortcut' is not a command that can be assigned a shortcut.
+
+[ERROR] shortcut s/usc c/unshortcut
+'unshortcut' is not a command that can be assigned a shortcut.
+
+[SUCCESS] shortcut s/lc c/listcontacts
+Shortcut 'lc' assigned to command 'listcontacts'.
+
+[ERROR] shortcut s/123 c/listcontacts
+Shortcut '123' is invalid. Shortcuts must start with a lowercase letter and contain only lowercase letters and digits.
+
+[ERROR] shortcut s/deletecontact c/listcontacts
+'deletecontact' is a built-in command word and cannot be used as a shortcut.
+
+[ERROR] shortcut s/bad c/unknowncmd
+'unknowncmd' is not a command that can be assigned a shortcut.
+
+[ERROR] unshortcut nonexistent
+Shortcut 'nonexistent' does not exist.
+
+[SUCCESS] unshortcut ac
+Shortcut 'ac' removed.
+
+[SUCCESS] shortcut
+Command shortcuts:
+b -> list
+lc -> listcontacts
+
+[SUCCESS] addcontact n/Alice p/91234567 e/alice@example.com a/Blk 1
+New contact added: Alice; Phone: 91234567; Email: alice@example.com; Address: Blk 1; Tags: ; Stories: 
+
+[SUCCESS] addstory Tech News
+Story "Tech News" has been added.
+
+[SUCCESS] assign ci/1 si/1
+Assigned Alice to Tech News
+
+[ERROR] assign ci/1 si/1
+Alice is already assigned to Tech News.
+
+[SUCCESS] unassign ci/1 si/1
+Unassigned Alice from Tech News
+
+[ERROR] unassign ci/1 si/1
+Alice is not assigned to Tech News.
+
+[ERROR] editcontact 1
+At least one field to edit must be provided.
+
+[ERROR] editstory 1
+At least one field to edit must be provided.
+
+[ERROR] editfollowup 1
+At least one field to edit must be provided.
+
+[ERROR] deletecontact 0
+Invalid command format!
+deletecontact: Deletes the contact identified by the index number used in the displayed contact list.
+Parameters: INDEX (must be a positive integer)
+Example: deletecontact 1
+
+[ERROR] deletecontact -1
+Invalid command format!
+deletecontact: Deletes the contact identified by the index number used in the displayed contact list.
+Parameters: INDEX (must be a positive integer)
+Example: deletecontact 1
+
+[ERROR] deletecontact 2147483648
+Invalid command format!
+deletecontact: Deletes the contact identified by the index number used in the displayed contact list.
+Parameters: INDEX (must be a positive integer)
+Example: deletecontact 1
+
+[ERROR] deletecontact 9999999999999999999999
+Invalid command format!
+deletecontact: Deletes the contact identified by the index number used in the displayed contact list.
+Parameters: INDEX (must be a positive integer)
+Example: deletecontact 1
+
+[ERROR] deletestory 0
+Invalid command format!
+deletestory: Deletes the story identified by the index number used in the displayed story list.
+Parameters: INDEX (must be a positive integer)
+Example: deletestory 1
+
+[ERROR] deletefollowup 0
+Invalid command format!
+deletefollowup: Deletes the followup identified by the index number used in the displayed followup list.
+Parameters: INDEX (must be a positive integer)
+Example: deletefollowup 1
+
+[ERROR] addcontact n/John/Doe p/91234567 e/j@d.com a/Blk 1
+Names can take any values except forward slash (/), and should not be blank
+
+[ERROR] addcontact n/John Doe p/91234567 e/j@d.com a/Blk 123/45
+Addresses can take any values except forward slash (/), and should not be blank
+
+[ERROR] addcontact n/John Doe p/91234567 e/j@d.com a/Blk 1 t/tag/one
+Tag names can take any values except forward slash (/), and should not be blank
+
+[ERROR] addstory Broken/Slash
+Names can take any values except forward slash (/), and should not be blank
+
+[ERROR] addfollowup Call/Witness ci/1
+Descriptions can take any values except forward slash (/), and should not be blank
+
+[ERROR] addcontact n/TagTest p/91234567 e/t@t.com a/Blk 1 t/
+Tag names can take any values except forward slash (/), and should not be blank
+
+[ERROR] addstory StoryTagTest t/
+Tag names can take any values except forward slash (/), and should not be blank
+
+[SUCCESS] clear
+PressMemo has been cleared!
+
