@@ -3,8 +3,6 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STORYINDEX;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_CONTACTS;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_STORIES;
 
 import java.util.List;
 
@@ -70,8 +68,6 @@ public class UnassignCommand extends AddressBookMutatingCommand {
         }
 
         model.unassignStory(contactToUnassign, storyToUnassign);
-        model.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
-        model.updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
         return new CommandResult(String.format(MESSAGE_SUCCESS, contactToUnassign.getName(),
                 storyToUnassign.getName()));
     }

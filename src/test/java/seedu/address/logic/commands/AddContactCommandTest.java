@@ -259,7 +259,7 @@ public class AddContactCommandTest {
         @Override
         public boolean hasContact(Contact contact) {
             requireNonNull(contact);
-            return this.contact.isSameContact(contact);
+            return this.contact.representsSameItem(contact);
         }
     }
 
@@ -272,7 +272,7 @@ public class AddContactCommandTest {
         @Override
         public boolean hasContact(Contact contact) {
             requireNonNull(contact);
-            return contactsAdded.stream().anyMatch(contact::isSameContact);
+            return contactsAdded.stream().anyMatch(contact::representsSameItem);
         }
 
         @Override

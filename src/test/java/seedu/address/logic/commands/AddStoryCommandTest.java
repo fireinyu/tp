@@ -258,7 +258,7 @@ public class AddStoryCommandTest {
         @Override
         public boolean hasStory(Story story) {
             requireNonNull(story);
-            return this.story.isSameStory(story);
+            return this.story.representsSameItem(story);
         }
     }
 
@@ -271,7 +271,7 @@ public class AddStoryCommandTest {
         @Override
         public boolean hasStory(Story story) {
             requireNonNull(story);
-            return storiesAdded.stream().anyMatch(story::isSameStory);
+            return storiesAdded.stream().anyMatch(story::representsSameItem);
         }
 
         @Override

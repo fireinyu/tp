@@ -78,7 +78,7 @@ public class EditContactCommand extends AddressBookMutatingCommand {
         Contact contactToEdit = lastShownList.get(index.getZeroBased());
         Contact editedContact = editContactDescriptor.createEditedContact(contactToEdit);
 
-        if (!contactToEdit.isSameContact(editedContact) && model.hasContact(editedContact)) {
+        if (!contactToEdit.representsSameItem(editedContact) && model.hasContact(editedContact)) {
             throw new CommandException(MESSAGE_DUPLICATE_CONTACT);
         }
 

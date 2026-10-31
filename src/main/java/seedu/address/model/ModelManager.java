@@ -109,6 +109,8 @@ public class ModelManager implements Model {
 
     @Override
     public void deleteContact(Contact target) {
+        updateFilteredStoryList(activeStoryFilter.notifyStateDeleted(target));
+        updateFilteredFollowupList(activeFollowupFilter.notifyStateDeleted(target));
         addressBook.removeContact(target);
     }
 
@@ -152,6 +154,7 @@ public class ModelManager implements Model {
 
     @Override
     public void deleteStory(Story target) {
+        updateFilteredContactList(activeContactFilter.notifyStateDeleted(target));
         addressBook.removeStory(target);
     }
 

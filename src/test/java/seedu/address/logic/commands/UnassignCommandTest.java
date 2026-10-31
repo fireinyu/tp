@@ -82,6 +82,8 @@ public class UnassignCommandTest {
         showStoryAtIndex(model, INDEX_SECOND_STORY);
 
         UnassignCommand unassignCommand = new UnassignCommand(Index.fromOneBased(1), Index.fromOneBased(1));
+        showContactAtIndex(expectedModel, INDEX_SECOND_CONTACT);
+        showStoryAtIndex(expectedModel, INDEX_SECOND_STORY);
         expectedModel.unassignStory(contact, story);
 
         String expectedMessage = String.format(UnassignCommand.MESSAGE_SUCCESS, contact.getName(), story.getName());

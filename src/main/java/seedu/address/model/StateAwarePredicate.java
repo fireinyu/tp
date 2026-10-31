@@ -9,7 +9,12 @@ import java.util.function.Predicate;
  * @param <U> Type of the state object tracked by this predicate.
  */
 public abstract class StateAwarePredicate<T, U> implements Predicate<T> {
-    public StateAwarePredicate <T, U> notifyStateChanged(U oldState, U newState) {
+
+    public StateAwarePredicate<T, U> notifyStateChanged(U oldstate, U newState) {
+        return this;
+    }
+
+    public StateAwarePredicate<T, U> notifyStateDeleted(U oldstate) {
         return this;
     }
 }

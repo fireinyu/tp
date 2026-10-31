@@ -9,19 +9,19 @@ import java.util.stream.IntStream;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import seedu.address.model.SemanticRepresenter;
 import seedu.address.model.story.exceptions.DuplicateStoryException;
 import seedu.address.model.story.exceptions.StoryNotFoundException;
 
 /**
  * A list of stories that enforces uniqueness between its elements and does not allow nulls.
- * A story is considered unique by comparing using {@code Story#isSameStory(Story)}. As such, adding and updating of
- * stories uses Story#isSameStory(Story) for equality so as to ensure that the story being added or updated is
- * unique in terms of identity in the UniqueStoryList. However, the removal of a story uses Story#equals(Object) so
- * as to ensure that the story with exactly the same fields will be removed.
+ * A story is considered unique by comparing using {@code Story#representsSameItem(Story)}. As such,
+ * adding and updating of stories uses Story#representsSameItem(Story) for equality so as to ensure
+ * that the story being added or updated is unique in terms of identity in the UniqueStoryList.
+ * However, the removal of a story uses Story#equals(Object) so as to ensure that the story with
+ * exactly the same fields will be removed.
  *
- * Supports a minimal set of list operations.
- *
- * @see Story#isSameStory(Story)
+ * @see Story#representsSameItem(SemanticRepresenter)
  */
 
 public class UniqueStoryList implements Iterable<Story> {
@@ -35,7 +35,7 @@ public class UniqueStoryList implements Iterable<Story> {
      */
     public boolean contains(Story toCheck) {
         requireNonNull(toCheck);
-        return internalList.stream().anyMatch(toCheck::isSameStory);
+        return internalList.stream().anyMatch(toCheck::representsSameItem);
     }
 
     /**
@@ -63,7 +63,7 @@ public class UniqueStoryList implements Iterable<Story> {
             throw new StoryNotFoundException();
         }
 
-        if (!target.isSameStory(editedStory) && contains(editedStory)) {
+        if (!target.representsSameItem(editedStory) && contains(editedStory)) {
             throw new DuplicateStoryException();
         }
 
@@ -141,7 +141,7 @@ public class UniqueStoryList implements Iterable<Story> {
     private boolean storiesAreUnique(List<Story> stories) {
         for (int i = 0; i < stories.size() - 1; i++) {
             for (int j = i + 1; j < stories.size(); j++) {
-                if (stories.get(i).isSameStory(stories.get(j))) {
+                if (stories.get(i).representsSameItem(stories.get(j))) {
                     return false;
                 }
             }
@@ -154,7 +154,7 @@ public class UniqueStoryList implements Iterable<Story> {
      */
     private int indexOfSameStory(Story target) {
         return IntStream.range(0, internalList.size())
-                .filter(index -> internalList.get(index).isSameStory(target))
+                .filter(index -> internalList.get(index).representsSameItem(target))
                 .findFirst()
                 .orElse(-1);
     }

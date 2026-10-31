@@ -69,7 +69,7 @@ public class EditStoryCommand extends AddressBookMutatingCommand {
         Story storyToEdit = lastShownList.get(index.getZeroBased());
         Story editedStory = editStoryDescriptor.createEditedStory(storyToEdit);
 
-        if (!storyToEdit.isSameStory(editedStory) && model.hasStory(editedStory)) {
+        if (!storyToEdit.representsSameItem(editedStory) && model.hasStory(editedStory)) {
             throw new CommandException(MESSAGE_DUPLICATE_STORY);
         }
 

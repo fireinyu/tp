@@ -76,6 +76,8 @@ public class AssignCommandTest {
         Story story = model.getFilteredStoryList().get(0);
 
         AssignCommand assignCommand = new AssignCommand(Index.fromOneBased(1), Index.fromOneBased(1));
+        showContactAtIndex(expectedModel, INDEX_SECOND_CONTACT);
+        showStoryAtIndex(expectedModel, INDEX_SECOND_STORY);
         expectedModel.assignStory(contact, story);
 
         String expectedMessage = String.format(AssignCommand.MESSAGE_SUCCESS, contact.getName(), story.getName());
