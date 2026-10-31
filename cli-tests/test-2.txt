@@ -1,0 +1,7 @@
+clear
+addcontact n/Alice p/91234567 e/alice@example.com a/Blk 1
+addstory General Election
+assign ci/1 si/1
+liststories ci/1
+listcontacts si/1
+deletestory 1

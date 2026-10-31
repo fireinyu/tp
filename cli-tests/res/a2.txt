@@ -1,0 +1,84 @@
+[SUCCESS] clear
+PressMemo has been cleared!
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+(empty)
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addcontact n/Alice p/91234567 e/alice@example.com a/Blk 1
+New contact added: Alice; Phone: 91234567; Email: alice@example.com; Address: Blk 1; Tags: ; Stories: 
+
+Contacts Panel:
+1. Alice; Phone: 91234567; Email: alice@example.com; Address: Blk 1; Tags: ; Stories: 
+
+Stories Panel:
+(empty)
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory General Election
+Story "General Election" has been added.
+
+Contacts Panel:
+1. Alice; Phone: 91234567; Email: alice@example.com; Address: Blk 1; Tags: ; Stories: 
+
+Stories Panel:
+1. General Election
+
+Followups Panel:
+(empty)
+
+[SUCCESS] assign ci/1 si/1
+Assigned Alice to General Election
+
+Contacts Panel:
+1. Alice; Phone: 91234567; Email: alice@example.com; Address: Blk 1; Tags: ; Stories: [General Election]
+
+Stories Panel:
+1. General Election; Contacts: [Alice]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] liststories ci/1
+Listed 1 story(ies) assigned to Alice
+
+Contacts Panel:
+1. Alice; Phone: 91234567; Email: alice@example.com; Address: Blk 1; Tags: ; Stories: [General Election]
+
+Stories Panel:
+1. General Election; Contacts: [Alice]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] listcontacts si/1
+Listed 1 contact(s) assigned to General Election
+
+Contacts Panel:
+1. Alice; Phone: 91234567; Email: alice@example.com; Address: Blk 1; Tags: ; Stories: [General Election]
+
+Stories Panel:
+1. General Election; Contacts: [Alice]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] deletestory 1
+Deleted story: General Election; Contacts: [Alice]
+
+Contacts Panel:
+1. Alice; Phone: 91234567; Email: alice@example.com; Address: Blk 1; Tags: ; Stories: 
+
+Stories Panel:
+(empty)
+
+Followups Panel:
+(empty)
+
