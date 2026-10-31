@@ -24,6 +24,15 @@ run {
     enableAssertions = true
 }
 
+task runCliTest(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'seedu.address.CliTestRunner'
+    enableAssertions = true
+    if (project.hasProperty('args')) {
+        args project.args.split('\\s+')
+    }
+}
+
 checkstyle {
     toolVersion = '14.1.0'
 }
