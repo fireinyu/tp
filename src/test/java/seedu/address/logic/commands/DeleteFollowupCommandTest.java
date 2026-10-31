@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.CommandTestUtil.PREDICATE_SHOW_NO_FOLLOWUPS;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showFollowupAtIndex;
@@ -60,8 +61,8 @@ public class DeleteFollowupCommandTest {
                 Messages.format(followupToDelete));
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        showFollowupAtIndex(expectedModel, INDEX_FIRST_FOLLOWUP);
         expectedModel.deleteFollowup(followupToDelete);
-        showNoFollowup(expectedModel);
 
         assertCommandSuccess(deleteFollowupCommand, model, expectedMessage, expectedModel);
     }
@@ -113,7 +114,7 @@ public class DeleteFollowupCommandTest {
      * Updates {@code model}'s filtered list to show no followups.
      */
     private void showNoFollowup(Model model) {
-        model.updateFilteredFollowupList(f -> false);
+        model.updateFilteredFollowupList(PREDICATE_SHOW_NO_FOLLOWUPS);
 
         assertTrue(model.getFilteredFollowupList().isEmpty());
     }

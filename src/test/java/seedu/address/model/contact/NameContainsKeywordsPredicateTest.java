@@ -13,28 +13,36 @@ import seedu.address.testutil.ContactBuilder;
 public class NameContainsKeywordsPredicateTest {
 
     @Test
-    public void equals() {
-        List<String> firstPredicateKeywordList = List.of("first");
-        List<String> secondPredicateKeywordList = List.of("first", "second");
+    public void test_sameKeywords_sameFilteringBehavior() {
+        List<String> keywords = List.of("Alice", "Bob");
+        NameContainsKeywordsPredicate firstPredicate = new NameContainsKeywordsPredicate(keywords);
+        NameContainsKeywordsPredicate secondPredicate = new NameContainsKeywordsPredicate(keywords);
 
-        NameContainsKeywordsPredicate firstPredicate = new NameContainsKeywordsPredicate(firstPredicateKeywordList);
-        NameContainsKeywordsPredicate secondPredicate = new NameContainsKeywordsPredicate(secondPredicateKeywordList);
+        Contact matchingContact = new ContactBuilder().withName("Alice Bob").build();
+        Contact nonMatchingContact = new ContactBuilder().withName("Carol Danvers").build();
 
-        // same object -> returns true
-        assertTrue(firstPredicate.equals(firstPredicate));
+        assertEquals(firstPredicate.test(matchingContact), secondPredicate.test(matchingContact));
+        assertTrue(firstPredicate.test(matchingContact));
 
-        // same values -> returns true
-        NameContainsKeywordsPredicate firstPredicateCopy = new NameContainsKeywordsPredicate(firstPredicateKeywordList);
-        assertTrue(firstPredicate.equals(firstPredicateCopy));
+        assertEquals(firstPredicate.test(nonMatchingContact), secondPredicate.test(nonMatchingContact));
+        assertFalse(firstPredicate.test(nonMatchingContact));
 
-        // different types -> returns false
-        assertFalse(firstPredicate.equals(1));
+        assertEquals(firstPredicate.toString(), secondPredicate.toString());
+    }
 
-        // null -> returns false
-        assertFalse(firstPredicate.equals(null));
+    @Test
+    public void test_differentKeywords_differentFilteringBehavior() {
+        NameContainsKeywordsPredicate firstPredicate = new NameContainsKeywordsPredicate(List.of("Alice"));
+        NameContainsKeywordsPredicate secondPredicate = new NameContainsKeywordsPredicate(List.of("Bob"));
 
-        // different contact -> returns false
-        assertFalse(firstPredicate.equals(secondPredicate));
+        Contact alice = new ContactBuilder().withName("Alice").build();
+        Contact bob = new ContactBuilder().withName("Bob").build();
+
+        assertTrue(firstPredicate.test(alice));
+        assertFalse(secondPredicate.test(alice));
+
+        assertFalse(firstPredicate.test(bob));
+        assertTrue(secondPredicate.test(bob));
     }
 
     @Test
@@ -77,7 +85,7 @@ public class NameContainsKeywordsPredicateTest {
         List<String> keywords = List.of("keyword1", "keyword2");
         NameContainsKeywordsPredicate predicate = new NameContainsKeywordsPredicate(keywords);
 
-        String expected = NameContainsKeywordsPredicate.class.getCanonicalName() + "{keywords=" + keywords + "}";
+        String expected = "Filtered: \"keyword1 keyword2\"";
         assertEquals(expected, predicate.toString());
     }
 }

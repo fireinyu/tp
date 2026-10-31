@@ -2,7 +2,10 @@ package seedu.address.logic.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.Messages.MESSAGE_CONTACTS_LISTED_OVERVIEW;
+import static seedu.address.logic.Messages.MESSAGE_FOLLOWUPS_LISTED_OVERVIEW;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_STORIES_LISTED_OVERVIEW;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
@@ -26,6 +29,8 @@ import seedu.address.logic.commands.AddFollowupCommand;
 import seedu.address.logic.commands.AddStoryCommand;
 import seedu.address.logic.commands.AssignCommand;
 import seedu.address.logic.commands.ClearCommand;
+import seedu.address.logic.commands.Command;
+import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.DeleteContactCommand;
 import seedu.address.logic.commands.DeleteFollowupCommand;
 import seedu.address.logic.commands.DeleteStoryCommand;
@@ -48,13 +53,16 @@ import seedu.address.logic.commands.ShortcutCommand;
 import seedu.address.logic.commands.UnassignCommand;
 import seedu.address.logic.commands.UnshortcutCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.AddressBook;
+import seedu.address.model.Model;
+import seedu.address.model.ModelManager;
+import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
-import seedu.address.model.contact.NameContainsKeywordsPredicate;
+import seedu.address.model.contact.Name;
+import seedu.address.model.followup.Followup;
 import seedu.address.model.followup.FollowupDescription;
-import seedu.address.model.followup.FollowupDescriptionContainsKeywordsPredicate;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
-import seedu.address.model.story.StoryNameContainsKeywordsPredicate;
 import seedu.address.testutil.ContactBuilder;
 import seedu.address.testutil.ContactUtil;
 import seedu.address.testutil.EditContactDescriptorBuilder;
@@ -123,17 +131,41 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_find() throws Exception {
         List<String> keywords = List.of("foo", "bar", "baz");
-        FindContactsCommand command = (FindContactsCommand) parser.parseCommand(
+        Command command = parser.parseCommand(
                 FindContactsCommand.COMMAND_WORD + " " + keywords.stream().collect(Collectors.joining(" ")));
-        assertEquals(new FindContactsCommand(new NameContainsKeywordsPredicate(keywords)), command);
+        assertTrue(command instanceof FindContactsCommand);
+
+        AddressBook addressBook = new AddressBook();
+        Contact matchingContact = new ContactBuilder().withName("foo bar").build();
+        Contact nonMatchingContact = new ContactBuilder().withName("other").build();
+        addressBook.addContact(matchingContact);
+        addressBook.addContact(nonMatchingContact);
+
+        Model model = new ModelManager(addressBook, new UserPrefs());
+        CommandResult result = command.execute(model);
+
+        assertEquals(String.format(MESSAGE_CONTACTS_LISTED_OVERVIEW, 1), result.getFeedbackToUser());
+        assertEquals(List.of(matchingContact), model.getFilteredContactList());
     }
 
     @Test
     public void parseCommand_findStory() throws Exception {
         List<String> keywords = List.of("housing", "investigation");
-        FindStoriesCommand command = (FindStoriesCommand) parser.parseCommand(
+        Command command = parser.parseCommand(
                 FindStoriesCommand.COMMAND_WORD + " " + String.join(" ", keywords));
-        assertEquals(new FindStoriesCommand(new StoryNameContainsKeywordsPredicate(keywords)), command);
+        assertTrue(command instanceof FindStoriesCommand);
+
+        AddressBook addressBook = new AddressBook();
+        Story matchingStory = new Story(new StoryName("housing investigation"), Collections.emptySet());
+        Story nonMatchingStory = new Story(new StoryName("health report"), Collections.emptySet());
+        addressBook.addStory(matchingStory);
+        addressBook.addStory(nonMatchingStory);
+
+        Model model = new ModelManager(addressBook, new UserPrefs());
+        CommandResult result = command.execute(model);
+
+        assertEquals(String.format(MESSAGE_STORIES_LISTED_OVERVIEW, 1), result.getFeedbackToUser());
+        assertEquals(List.of(matchingStory), model.getFilteredStoryList());
     }
 
     @Test
@@ -215,9 +247,23 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_findFollowups() throws Exception {
         List<String> keywords = List.of("interview", "urgent");
-        FindFollowupsCommand command = (FindFollowupsCommand) parser.parseCommand(
+        Command command = parser.parseCommand(
                 FindFollowupsCommand.COMMAND_WORD + " " + String.join(" ", keywords));
-        assertEquals(new FindFollowupsCommand(new FollowupDescriptionContainsKeywordsPredicate(keywords)), command);
+        assertTrue(command instanceof FindFollowupsCommand);
+
+        AddressBook addressBook = new AddressBook();
+        Followup matchingFollowup = new Followup(
+                new FollowupDescription("interview"), new Name("Alice"));
+        Followup nonMatchingFollowup = new Followup(
+                new FollowupDescription("unrelated"), new Name("Alice"));
+        addressBook.addFollowup(matchingFollowup);
+        addressBook.addFollowup(nonMatchingFollowup);
+
+        Model model = new ModelManager(addressBook, new UserPrefs());
+        CommandResult result = command.execute(model);
+
+        assertEquals(String.format(MESSAGE_FOLLOWUPS_LISTED_OVERVIEW, 1), result.getFeedbackToUser());
+        assertEquals(List.of(matchingFollowup), model.getFilteredFollowupList());
     }
 
     @Test

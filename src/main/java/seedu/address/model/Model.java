@@ -1,37 +1,25 @@
 package seedu.address.model;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.contact.Contact;
-import seedu.address.model.contact.Name;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.story.Story;
-import seedu.address.model.story.StoryName;
 
 /**
  * The API of the Model component.
  */
 public interface Model {
     /** {@code Predicate} that always evaluates to true */
-    Predicate<Contact> PREDICATE_SHOW_ALL_CONTACTS = unused -> true;
-    Predicate<Story> PREDICATE_SHOW_ALL_STORIES = unused -> true;
-    Predicate<Followup> PREDICATE_SHOW_ALL_FOLLOWUPS = unused -> true;
+    StateAwarePredicate<Contact, Story> PREDICATE_SHOW_ALL_CONTACTS = new ListAllPredicate<>();
+    StateAwarePredicate<Story, Contact> PREDICATE_SHOW_ALL_STORIES = new ListAllPredicate<>();
+    StateAwarePredicate<Followup, Contact> PREDICATE_SHOW_ALL_FOLLOWUPS = new ListAllPredicate<>();
 
     /** Default filter status when all items are shown. */
-    String FILTER_STATUS_ALL = "All";
-
-    /** Format string for filter status when items are filtered by a contact. */
-    String FILTER_STATUS_BY_CONTACT_FORMAT = "Filtered by contact: \"%s\"";
-
-    /** Format string for filter status when items are filtered by a story. */
-    String FILTER_STATUS_BY_STORY_FORMAT = "Filtered by story: \"%s\"";
+    String FILTER_STATUS_ALL = new ListAllPredicate<>().toString();
 
     /**
      * Returns the user prefs.
@@ -158,112 +146,23 @@ public interface Model {
     ObservableList<Followup> getFilteredFollowupList();
 
     /**
-     * Updates the filter of the filtered contact list to show contacts assigned to the specified {@code story}.
-     * @throws NullPointerException if {@code story} is null.
-     */
-    default void updateFilteredContactList(Story story) {
-        requireNonNull(story);
-        updateFilteredContactList(story::isAssigned, story.getName());
-    }
-
-    /**
-     * Updates the filter of the filtered contact list to filter by the given {@code predicate}
-     * associated with the specified {@code storyName}.
-     * @throws NullPointerException if {@code predicate} or {@code storyName} is null.
-     */
-    default void updateFilteredContactList(Predicate<Contact> predicate, StoryName storyName) {
-        throw new AssertionError("This method should not be called.");
-    }
-
-    /**
      * Updates the filter of the filtered contact list to filter by the given {@code predicate}.
      * @throws NullPointerException if {@code predicate} is null.
      */
-    void updateFilteredContactList(Predicate<Contact> predicate);
-
-    /**
-     * Updates the filter of the filtered contact list to filter by the given {@code predicate}
-     * with the specified {@code filterStatus} description.
-     * @throws NullPointerException if {@code predicate} or {@code filterStatus} is null.
-     */
-    void updateFilteredContactList(Predicate<Contact> predicate, String filterStatus);
-
-    /**
-     * Updates the filter of the filtered story list to show stories assigned to the specified {@code contact}.
-     * @throws NullPointerException if {@code contact} is null.
-     */
-    default void updateFilteredStoryList(Contact contact) {
-        requireNonNull(contact);
-        updateFilteredStoryList(story -> story.isAssigned(contact), contact.getName());
-    }
-
-    /**
-     * Updates the filter of the filtered story list to filter by the given {@code predicate}
-     * associated with the specified {@code contactName}.
-     * @throws NullPointerException if {@code predicate} or {@code contactName} is null.
-     */
-    default void updateFilteredStoryList(Predicate<Story> predicate, Name contactName) {
-        throw new AssertionError("This method should not be called.");
-    }
+    void updateFilteredContactList(StateAwarePredicate<Contact, Story> predicate);
 
     /**
      * Updates the filter of the filtered story list to filter by the given {@code predicate}.
      * @throws NullPointerException if {@code predicate} is null.
      */
-    void updateFilteredStoryList(Predicate<Story> predicate);
+    void updateFilteredStoryList(StateAwarePredicate<Story, Contact> predicate);
 
-    /**
-     * Updates the filter of the filtered story list to filter by the given {@code predicate}
-     * with the specified {@code filterStatus} description.
-     * @throws NullPointerException if {@code predicate} or {@code filterStatus} is null.
-     */
-    void updateFilteredStoryList(Predicate<Story> predicate, String filterStatus);
-
-    /**
-     * Updates the filter of the filtered followup list to show followups for the specified {@code contact}.
-     * @throws NullPointerException if {@code contact} is null.
-     */
-    default void updateFilteredFollowupList(Contact contact) {
-        requireNonNull(contact);
-        updateFilteredFollowupList(followup -> followup.isFor(contact), contact.getName());
-    }
-
-    /**
-     * Updates the filter of the filtered followup list to filter by the given {@code predicate}
-     * associated with the specified {@code contactName}.
-     * @throws NullPointerException if {@code predicate} or {@code contactName} is null.
-     */
-    default void updateFilteredFollowupList(Predicate<Followup> predicate, Name contactName) {
-        throw new AssertionError("This method should not be called.");
-    }
 
     /**
      * Updates the filter of the filtered followup list to filter by the given {@code predicate}.
      * @throws NullPointerException if {@code predicate} is null.
      */
-    void updateFilteredFollowupList(Predicate<Followup> predicate);
-
-    /**
-     * Updates the filter of the filtered followup list to filter by the given {@code predicate}
-     * with the specified {@code filterStatus} description.
-     * @throws NullPointerException if {@code predicate} or {@code filterStatus} is null.
-     */
-    void updateFilteredFollowupList(Predicate<Followup> predicate, String filterStatus);
-
-    /** Returns the active story filter for the contact list, if any. */
-    default Optional<StoryName> getActiveStoryFilter() {
-        return Optional.empty();
-    }
-
-    /** Returns the active contact filter for the story list, if any. */
-    default Optional<Name> getActiveContactFilterForStories() {
-        return Optional.empty();
-    }
-
-    /** Returns the active contact filter for the followup list, if any. */
-    default Optional<Name> getActiveContactFilterForFollowups() {
-        return Optional.empty();
-    }
+    void updateFilteredFollowupList(StateAwarePredicate<Followup, Contact> predicate);
 
     /** Returns the filter status property of the contact list. */
     ObservableValue<String> getContactFilterStatusProperty();

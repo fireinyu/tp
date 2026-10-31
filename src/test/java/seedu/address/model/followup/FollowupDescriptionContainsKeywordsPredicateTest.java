@@ -63,29 +63,54 @@ public class FollowupDescriptionContainsKeywordsPredicateTest {
     }
 
     @Test
-    public void equals_sameKeywords_returnsTrue() {
+    public void test_sameKeywords_sameFilteringBehavior() {
         FollowupDescriptionContainsKeywordsPredicate first =
                 new FollowupDescriptionContainsKeywordsPredicate(
                         List.of("interview"));
-
         FollowupDescriptionContainsKeywordsPredicate second =
                 new FollowupDescriptionContainsKeywordsPredicate(
                         List.of("interview"));
 
-        assertEquals(first, second);
-        assertEquals(first.hashCode(), second.hashCode());
+        Followup nonMatchingFollowup = new Followup(
+                new FollowupDescription("Submit draft report"),
+                new Name("John Doe"));
+
+        assertEquals(first.test(followup), second.test(followup));
+        assertTrue(first.test(followup));
+
+        assertEquals(first.test(nonMatchingFollowup), second.test(nonMatchingFollowup));
+        assertFalse(first.test(nonMatchingFollowup));
+
+        assertEquals(first.toString(), second.toString());
     }
 
     @Test
-    public void equals_differentKeywords_returnsFalse() {
+    public void test_differentKeywords_differentFilteringBehavior() {
         FollowupDescriptionContainsKeywordsPredicate first =
                 new FollowupDescriptionContainsKeywordsPredicate(
                         List.of("interview"));
-
         FollowupDescriptionContainsKeywordsPredicate second =
                 new FollowupDescriptionContainsKeywordsPredicate(
                         List.of("meeting"));
 
-        assertFalse(first.equals(second));
+        Followup meetingFollowup = new Followup(
+                new FollowupDescription("Meeting with editor"),
+                new Name("John Doe"));
+
+        assertTrue(first.test(followup));
+        assertFalse(second.test(followup));
+
+        assertFalse(first.test(meetingFollowup));
+        assertTrue(second.test(meetingFollowup));
+    }
+
+    @Test
+    public void toStringMethod() {
+        List<String> keywords = List.of("interview", "meeting");
+        FollowupDescriptionContainsKeywordsPredicate predicate =
+                new FollowupDescriptionContainsKeywordsPredicate(keywords);
+
+        String expected = "Filtered: \"interview meeting\"";
+        assertEquals(expected, predicate.toString());
     }
 }

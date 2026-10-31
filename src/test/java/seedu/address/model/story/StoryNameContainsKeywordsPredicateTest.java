@@ -12,19 +12,38 @@ import org.junit.jupiter.api.Test;
 public class StoryNameContainsKeywordsPredicateTest {
 
     @Test
-    public void equals() {
-        StoryNameContainsKeywordsPredicate firstPredicate =
-                new StoryNameContainsKeywordsPredicate(List.of("first"));
-        StoryNameContainsKeywordsPredicate firstPredicateCopy =
-                new StoryNameContainsKeywordsPredicate(List.of("first"));
-        StoryNameContainsKeywordsPredicate secondPredicate =
-                new StoryNameContainsKeywordsPredicate(List.of("second"));
+    public void test_sameKeywords_sameFilteringBehavior() {
+        List<String> keywords = List.of("Housing");
+        StoryNameContainsKeywordsPredicate firstPredicate = new StoryNameContainsKeywordsPredicate(keywords);
+        StoryNameContainsKeywordsPredicate secondPredicate = new StoryNameContainsKeywordsPredicate(keywords);
 
-        assertTrue(firstPredicate.equals(firstPredicate));
-        assertTrue(firstPredicate.equals(firstPredicateCopy));
-        assertFalse(firstPredicate.equals(secondPredicate));
-        assertFalse(firstPredicate.equals(1));
-        assertFalse(firstPredicate.equals(null));
+        Story matchingStory = new Story(new StoryName("Housing Investigation"), new HashSet<>());
+        Story nonMatchingStory = new Story(new StoryName("Healthcare Scandal"), new HashSet<>());
+
+        assertEquals(firstPredicate.test(matchingStory), secondPredicate.test(matchingStory));
+        assertTrue(firstPredicate.test(matchingStory));
+
+        assertEquals(firstPredicate.test(nonMatchingStory), secondPredicate.test(nonMatchingStory));
+        assertFalse(firstPredicate.test(nonMatchingStory));
+
+        assertEquals(firstPredicate.toString(), secondPredicate.toString());
+    }
+
+    @Test
+    public void test_differentKeywords_differentFilteringBehavior() {
+        StoryNameContainsKeywordsPredicate firstPredicate =
+                new StoryNameContainsKeywordsPredicate(List.of("Housing"));
+        StoryNameContainsKeywordsPredicate secondPredicate =
+                new StoryNameContainsKeywordsPredicate(List.of("Healthcare"));
+
+        Story housingStory = new Story(new StoryName("Housing Investigation"), new HashSet<>());
+        Story healthStory = new Story(new StoryName("Healthcare Scandal"), new HashSet<>());
+
+        assertTrue(firstPredicate.test(housingStory));
+        assertFalse(secondPredicate.test(housingStory));
+
+        assertFalse(firstPredicate.test(healthStory));
+        assertTrue(secondPredicate.test(healthStory));
     }
 
     @Test
@@ -50,8 +69,7 @@ public class StoryNameContainsKeywordsPredicateTest {
         List<String> keywords = List.of("housing", "investigation");
         StoryNameContainsKeywordsPredicate predicate = new StoryNameContainsKeywordsPredicate(keywords);
 
-        String expected = StoryNameContainsKeywordsPredicate.class.getCanonicalName()
-                + "{keywords=" + keywords + "}";
+        String expected = "Filtered: \"housing investigation\"";
         assertEquals(expected, predicate.toString());
     }
 }

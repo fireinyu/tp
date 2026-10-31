@@ -1,40 +1,22 @@
 package seedu.address.model.followup;
 
 import java.util.List;
-import java.util.function.Predicate;
+
+import seedu.address.model.BaseKeywordPredicate;
+import seedu.address.model.contact.Contact;
 
 /**
- * Tests that a Followup's description contains
- * any of the keywords given.
+ * Tests that a Followup's description contains any of the keywords given.
  */
 public class FollowupDescriptionContainsKeywordsPredicate
-        implements Predicate<Followup> {
-
-    private final List<String> keywords;
+        extends BaseKeywordPredicate<Followup, Contact> {
 
     public FollowupDescriptionContainsKeywordsPredicate(List<String> keywords) {
-        this.keywords = List.copyOf(keywords);
-    }
-
-    public List<String> getKeywords() {
-        return keywords;
+        super(keywords);
     }
 
     @Override
-    public boolean test(Followup followup) {
-        return keywords.stream()
-                .anyMatch(followup::isDescriptionMatching);
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        return other == this
-                || (other instanceof FollowupDescriptionContainsKeywordsPredicate otherPredicate
-                && keywords.equals(otherPredicate.keywords));
-    }
-
-    @Override
-    public int hashCode() {
-        return keywords.hashCode();
+    public boolean matchesKeyword(Followup item, String keyword) {
+        return item.isDescriptionMatching(keyword);
     }
 }

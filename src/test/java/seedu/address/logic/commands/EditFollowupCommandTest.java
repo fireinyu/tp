@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
+import seedu.address.logic.commands.CommandTestUtil.ContactEqualsPredicate;
 import seedu.address.logic.commands.EditFollowupCommand.EditFollowupDescriptor;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.AddressBookParser;
@@ -19,6 +20,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.followup.FollowupDescription;
+import seedu.address.model.followup.FollowupIsForContactPredicate;
 
 public class EditFollowupCommandTest {
     private final Model model = new ModelManager();
@@ -39,7 +41,7 @@ public class EditFollowupCommandTest {
 
     @Test
     public void execute_contactOnly_usesFilteredContactIndex() throws Exception {
-        model.updateFilteredContactList(contact -> contact.equals(BENSON));
+        model.updateFilteredContactList(new ContactEqualsPredicate(BENSON));
         new AddressBookParser().parseCommand("editfollowup 1 ci/1").execute(model);
         assertEquals(new Followup(original.getDescription(), BENSON.getName()),
                 model.getFilteredFollowupList().get(0));
@@ -49,7 +51,7 @@ public class EditFollowupCommandTest {
     public void execute_bothFields_usesFilteredFollowupIndexAndPreservesFilter() throws Exception {
         Followup second = new Followup(new FollowupDescription("Meet"), ALICE.getName());
         model.addFollowup(second);
-        model.updateFilteredFollowupList(followup -> followup.getContact().equals(ALICE.getName()));
+        model.updateFilteredFollowupList(new FollowupIsForContactPredicate(ALICE));
         assertEquals(2, model.getFilteredFollowupList().size());
 
         new AddressBookParser().parseCommand("editfollowup 2 d/Email ci/2").execute(model);

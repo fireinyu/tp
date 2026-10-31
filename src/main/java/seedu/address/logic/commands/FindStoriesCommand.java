@@ -28,23 +28,9 @@ public class FindStoriesCommand extends Command {
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
-        model.updateFilteredStoryList(predicate,
-                String.format("Filtered: \"%s\"", String.join(" ", predicate.getKeywords())));
+        model.updateFilteredStoryList(predicate);
         return new CommandResult(
                 String.format(Messages.MESSAGE_STORIES_LISTED_OVERVIEW, model.getFilteredStoryList().size()));
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-
-        if (!(other instanceof FindStoriesCommand otherFindStoriesCommand)) {
-            return false;
-        }
-
-        return predicate.equals(otherFindStoriesCommand.predicate);
     }
 
     @Override

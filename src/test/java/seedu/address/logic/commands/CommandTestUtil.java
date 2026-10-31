@@ -16,10 +16,12 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
+import seedu.address.model.StateAwarePredicate;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.contact.NameContainsKeywordsPredicate;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.story.Story;
+import seedu.address.model.story.StoryName;
 import seedu.address.testutil.EditContactDescriptorBuilder;
 import seedu.address.testutil.EditStoryDescriptorBuilder;
 
@@ -58,6 +60,28 @@ public class CommandTestUtil {
 
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
     public static final String PREAMBLE_NON_EMPTY = "NonEmptyPreamble";
+
+    public static final StateAwarePredicate<Contact, Story> PREDICATE_SHOW_NO_CONTACTS =
+            new StateAwarePredicate<>() {
+                @Override
+                public boolean test(Contact contact) {
+                    return false;
+                }
+            };
+    public static final StateAwarePredicate<Story, Contact> PREDICATE_SHOW_NO_STORIES =
+            new StateAwarePredicate<>() {
+                @Override
+                public boolean test(Story story) {
+                    return false;
+                }
+            };
+    public static final StateAwarePredicate<Followup, Contact> PREDICATE_SHOW_NO_FOLLOWUPS =
+            new StateAwarePredicate<>() {
+                @Override
+                public boolean test(Followup followup) {
+                    return false;
+                }
+            };
 
     public static final EditContactCommand.EditContactDescriptor DESC_AMY;
     public static final EditContactCommand.EditContactDescriptor DESC_BOB;
@@ -156,14 +180,101 @@ public class CommandTestUtil {
     }
 
     /**
-     * Updates {@code model}'s filtered list to show only the story at the given {@code targetIndex} in the
-     * {@code model}'s address book.
+     * A predicate that returns true if the contact equals the specified contact.
+     */
+    public static class ContactEqualsPredicate extends StateAwarePredicate<Contact, Story> {
+        private final Contact contact;
+
+        public ContactEqualsPredicate(Contact contact) {
+            this.contact = contact;
+        }
+
+        @Override
+        public boolean test(Contact c) {
+            return c.equals(contact);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other == this || (other instanceof ContactEqualsPredicate
+                    && contact.equals(((ContactEqualsPredicate) other).contact));
+        }
+    }
+
+    /**
+     * A predicate that returns true if the story's name equals the specified story name.
+     */
+    public static class StoryNameEqualsPredicate extends StateAwarePredicate<Story, Contact> {
+        private final StoryName storyName;
+
+        public StoryNameEqualsPredicate(StoryName storyName) {
+            this.storyName = storyName;
+        }
+
+        @Override
+        public boolean test(Story s) {
+            return s.getName().equals(storyName);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other == this || (other instanceof StoryNameEqualsPredicate
+                    && storyName.equals(((StoryNameEqualsPredicate) other).storyName));
+        }
+    }
+
+    /**
+     * A predicate that returns true if the story equals the specified story.
+     */
+    public static class StoryEqualsPredicate extends StateAwarePredicate<Story, Contact> {
+        private final Story story;
+
+        public StoryEqualsPredicate(Story story) {
+            this.story = story;
+        }
+
+        @Override
+        public boolean test(Story s) {
+            return s.equals(story);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other == this || (other instanceof StoryEqualsPredicate
+                    && story.equals(((StoryEqualsPredicate) other).story));
+        }
+    }
+
+    /**
+     * A predicate that returns true if the followup equals the specified followup.
+     */
+    public static class FollowupEqualsPredicate extends StateAwarePredicate<Followup, Contact> {
+        private final Followup followup;
+
+        public FollowupEqualsPredicate(Followup followup) {
+            this.followup = followup;
+        }
+
+        @Override
+        public boolean test(Followup f) {
+            return f.equals(followup);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other == this || (other instanceof FollowupEqualsPredicate
+                    && followup.equals(((FollowupEqualsPredicate) other).followup));
+        }
+    }
+
+    /**
+     * Updates {@code model}'s filtered list to show only the story at the given {@code targetIndex}.
      */
     public static void showStoryAtIndex(Model model, Index targetIndex) {
         assertTrue(targetIndex.getZeroBased() < model.getFilteredStoryList().size());
 
         Story story = model.getFilteredStoryList().get(targetIndex.getZeroBased());
-        model.updateFilteredStoryList(s -> s.equals(story));
+        model.updateFilteredStoryList(new StoryEqualsPredicate(story));
 
         assertEquals(1, model.getFilteredStoryList().size());
     }
@@ -176,7 +287,7 @@ public class CommandTestUtil {
         assertTrue(targetIndex.getZeroBased() < model.getFilteredFollowupList().size());
 
         Followup followup = model.getFilteredFollowupList().get(targetIndex.getZeroBased());
-        model.updateFilteredFollowupList(f -> f.equals(followup));
+        model.updateFilteredFollowupList(new FollowupEqualsPredicate(followup));
 
         assertEquals(1, model.getFilteredFollowupList().size());
     }

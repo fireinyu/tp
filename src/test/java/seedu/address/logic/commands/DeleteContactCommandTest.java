@@ -60,8 +60,8 @@ public class DeleteContactCommandTest {
                 Messages.format(contactToDelete));
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        showContactAtIndex(expectedModel, INDEX_FIRST_CONTACT);
         expectedModel.deleteContact(contactToDelete);
-        showNoContact(expectedModel);
 
         assertCommandSuccess(deleteContactCommand, model, expectedMessage, expectedModel);
     }
@@ -109,12 +109,4 @@ public class DeleteContactCommandTest {
         assertEquals(expected, deleteContactCommand.toString());
     }
 
-    /**
-     * Updates {@code model}'s filtered list to show no one.
-     */
-    private void showNoContact(Model model) {
-        model.updateFilteredContactList(p -> false);
-
-        assertTrue(model.getFilteredContactList().isEmpty());
-    }
 }

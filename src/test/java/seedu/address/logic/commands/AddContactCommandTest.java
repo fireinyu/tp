@@ -10,7 +10,6 @@ import static seedu.address.testutil.TypicalContacts.ALICE;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +22,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.StateAwarePredicate;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.story.Story;
@@ -215,32 +215,17 @@ public class AddContactCommandTest {
         }
 
         @Override
-        public void updateFilteredContactList(Predicate<Contact> predicate) {
+        public void updateFilteredContactList(StateAwarePredicate<Contact, Story> predicate) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void updateFilteredContactList(Predicate<Contact> predicate, String filterStatus) {
+        public void updateFilteredStoryList(StateAwarePredicate<Story, Contact> predicate) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void updateFilteredStoryList(Predicate<Story> predicate) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void updateFilteredStoryList(Predicate<Story> predicate, String filterStatus) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void updateFilteredFollowupList(Predicate<Followup> predicate) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void updateFilteredFollowupList(Predicate<Followup> predicate, String filterStatus) {
+        public void updateFilteredFollowupList(StateAwarePredicate<Followup, Contact> predicate) {
             throw new AssertionError("This method should not be called.");
         }
 

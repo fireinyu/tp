@@ -26,12 +26,14 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
+import seedu.address.logic.commands.CommandTestUtil.StoryNameEqualsPredicate;
 import seedu.address.logic.commands.EditStoryCommand.EditStoryDescriptor;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
+import seedu.address.model.contact.ContactAssignedToStoryPredicate;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
@@ -139,7 +141,7 @@ public class EditStoryCommandTest {
     @Test
     public void execute_filteredList_preservesMatchingStory() {
         Story storyInFilteredList = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
-        model.updateFilteredStoryList(s -> s.getName().equals(storyInFilteredList.getName()));
+        model.updateFilteredStoryList(new StoryNameEqualsPredicate(storyInFilteredList.getName()));
         assertEquals(1, model.getFilteredStoryList().size());
 
         Story editedStory = new StoryBuilder(storyInFilteredList).withTags(VALID_STORYTAG_MALAYSIA).build();
@@ -150,7 +152,7 @@ public class EditStoryCommandTest {
                 String.format(EditStoryCommand.MESSAGE_EDIT_STORY_SUCCESS, Messages.format(editedStory));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-        expectedModel.updateFilteredStoryList(s -> s.getName().equals(storyInFilteredList.getName()));
+        expectedModel.updateFilteredStoryList(new StoryNameEqualsPredicate(storyInFilteredList.getName()));
         expectedModel.setStory(model.getFilteredStoryList().get(0), editedStory);
 
         assertCommandSuccess(editStoryCommand, model, expectedMessage, expectedModel);
@@ -292,7 +294,7 @@ public class EditStoryCommandTest {
 
         Story assignedStory = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
 
-        model.updateFilteredContactList(assignedStory);
+        model.updateFilteredContactList(new ContactAssignedToStoryPredicate(assignedStory));
 
         EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD).build();
         EditStoryCommand editStoryCommand = new EditStoryCommand(INDEX_FIRST_STORY, descriptor);
@@ -303,12 +305,12 @@ public class EditStoryCommandTest {
                 Messages.format(editedStory));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-        expectedModel.updateFilteredContactList(assignedStory);
+        expectedModel.updateFilteredContactList(new ContactAssignedToStoryPredicate(assignedStory));
         expectedModel.setStory(assignedStory, editedStory);
 
         assertCommandSuccess(editStoryCommand, model, expectedMessage, expectedModel);
 
-        String expectedStatus = String.format(Model.FILTER_STATUS_BY_STORY_FORMAT, editedStory.getName());
+        String expectedStatus = new ContactAssignedToStoryPredicate(editedStory).toString();
         assertEquals(expectedStatus, model.getContactFilterStatusProperty().getValue());
         assertEquals(1, model.getFilteredContactList().size());
     }

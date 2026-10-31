@@ -2,6 +2,8 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.CommandTestUtil.PREDICATE_SHOW_NO_FOLLOWUPS;
+import static seedu.address.logic.commands.CommandTestUtil.PREDICATE_SHOW_NO_STORIES;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showContactAtIndex;
 import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
@@ -45,8 +47,8 @@ public class ListCommandTest {
     @Test
     public void execute_listIsFiltered_showsEverything() {
         showContactAtIndex(model, INDEX_FIRST_CONTACT);
-        model.updateFilteredStoryList(story -> false);
-        model.updateFilteredFollowupList(followup -> false);
+        model.updateFilteredStoryList(PREDICATE_SHOW_NO_STORIES);
+        model.updateFilteredFollowupList(PREDICATE_SHOW_NO_FOLLOWUPS);
         String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
                 expectedModel.getFilteredContactList().size(),
                 expectedModel.getFilteredStoryList().size(),

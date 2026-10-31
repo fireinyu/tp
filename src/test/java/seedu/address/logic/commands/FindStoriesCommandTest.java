@@ -1,8 +1,6 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_STORIES_LISTED_OVERVIEW;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalStories.STORY_A;
@@ -23,19 +21,47 @@ public class FindStoriesCommandTest {
     private final Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
     @Test
-    public void equals() {
+    public void execute_distinctPredicates_yieldDistinctFilteringResults() {
         StoryNameContainsKeywordsPredicate firstPredicate =
-                new StoryNameContainsKeywordsPredicate(List.of("first"));
+                new StoryNameContainsKeywordsPredicate(List.of("A"));
         StoryNameContainsKeywordsPredicate secondPredicate =
-                new StoryNameContainsKeywordsPredicate(List.of("second"));
+                new StoryNameContainsKeywordsPredicate(List.of("C"));
+
         FindStoriesCommand firstCommand = new FindStoriesCommand(firstPredicate);
         FindStoriesCommand secondCommand = new FindStoriesCommand(secondPredicate);
 
-        assertTrue(firstCommand.equals(firstCommand));
-        assertTrue(firstCommand.equals(new FindStoriesCommand(firstPredicate)));
-        assertFalse(firstCommand.equals(secondCommand));
-        assertFalse(firstCommand.equals(1));
-        assertFalse(firstCommand.equals(null));
+        Model modelForFirst = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Model modelForSecond = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+
+        CommandResult firstResult = firstCommand.execute(modelForFirst);
+        CommandResult secondResult = secondCommand.execute(modelForSecond);
+
+        assertEquals(String.format(MESSAGE_STORIES_LISTED_OVERVIEW, 1), firstResult.getFeedbackToUser());
+        assertEquals(String.format(MESSAGE_STORIES_LISTED_OVERVIEW, 1), secondResult.getFeedbackToUser());
+
+        assertEquals(List.of(STORY_A), modelForFirst.getFilteredStoryList());
+        assertEquals(List.of(STORY_C), modelForSecond.getFilteredStoryList());
+    }
+
+    @Test
+    public void execute_samePredicateInstances_yieldIdenticalFilteringResults() {
+        StoryNameContainsKeywordsPredicate firstPredicate =
+                new StoryNameContainsKeywordsPredicate(List.of("A"));
+        StoryNameContainsKeywordsPredicate secondPredicate =
+                new StoryNameContainsKeywordsPredicate(List.of("A"));
+
+        FindStoriesCommand firstCommand = new FindStoriesCommand(firstPredicate);
+        FindStoriesCommand secondCommand = new FindStoriesCommand(secondPredicate);
+
+        Model modelForFirst = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Model modelForSecond = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+
+        CommandResult firstResult = firstCommand.execute(modelForFirst);
+        CommandResult secondResult = secondCommand.execute(modelForSecond);
+
+        assertEquals(firstResult.getFeedbackToUser(), secondResult.getFeedbackToUser());
+        assertEquals(modelForFirst.getFilteredStoryList(), modelForSecond.getFilteredStoryList());
+        assertEquals(List.of(STORY_A), modelForFirst.getFilteredStoryList());
     }
 
     @Test

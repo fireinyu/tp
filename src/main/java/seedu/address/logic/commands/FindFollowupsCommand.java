@@ -32,25 +32,11 @@ public class FindFollowupsCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
 
-        model.updateFilteredFollowupList(predicate,
-                String.format("Filtered: \"%s\"", String.join(" ", predicate.getKeywords())));
+        model.updateFilteredFollowupList(predicate);
 
         return new CommandResult(
                 String.format(Messages.MESSAGE_FOLLOWUPS_LISTED_OVERVIEW,
                         model.getFilteredFollowupList().size()));
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-
-        if (!(other instanceof FindFollowupsCommand otherCommand)) {
-            return false;
-        }
-
-        return predicate.equals(otherCommand.predicate);
     }
 
     @Override

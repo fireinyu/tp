@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.CommandTestUtil.PREDICATE_SHOW_NO_STORIES;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -25,6 +26,7 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.story.Story;
+import seedu.address.model.story.StoryAssignedToContactPredicate;
 import seedu.address.testutil.ContactBuilder;
 
 /**
@@ -53,7 +55,7 @@ public class ListStoriesCommandTest {
 
     @Test
     public void execute_listIsFiltered_showsEverything() {
-        model.updateFilteredStoryList(story -> false);
+        model.updateFilteredStoryList(PREDICATE_SHOW_NO_STORIES);
 
         String expectedMessage = String.format(ListStoriesCommand.MESSAGE_SUCCESS,
                 expectedModel.getFilteredStoryList().size());
@@ -73,7 +75,7 @@ public class ListStoriesCommandTest {
                 INDEX_FIRST_CONTACT.getZeroBased());
 
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.updateFilteredStoryList(assignedContact);
+        expectedModel.updateFilteredStoryList(new StoryAssignedToContactPredicate(assignedContact));
 
         String expectedMessage = String.format(ListStoriesCommand.MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS,
                 1, assignedContact.getName());
@@ -92,7 +94,7 @@ public class ListStoriesCommandTest {
         Contact contact = model.getFilteredContactList().get(
                 INDEX_FIRST_CONTACT.getZeroBased());
 
-        expectedModel.updateFilteredStoryList(contact);
+        expectedModel.updateFilteredStoryList(new StoryAssignedToContactPredicate(contact));
 
         String expectedMessage = String.format(ListStoriesCommand.MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS,
                 0, contact.getName());
@@ -140,7 +142,7 @@ public class ListStoriesCommandTest {
         model.setContact(contactToEdit, editedContact);
 
         // Filter status and filtered stories should be updated
-        String expectedStatus = String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, editedContact.getName());
+        String expectedStatus = new StoryAssignedToContactPredicate(editedContact).toString();
         assertEquals(expectedStatus, model.getStoryFilterStatusProperty().getValue());
         assertEquals(1, model.getFilteredStoryList().size());
         assertEquals(story.getName(), model.getFilteredStoryList().get(0).getName());

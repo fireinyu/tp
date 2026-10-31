@@ -1,8 +1,6 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_FOLLOWUPS_LISTED_OVERVIEW;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -28,20 +26,47 @@ public class FindFollowupsCommandTest {
             new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
     @Test
-    public void equals() {
+    public void execute_distinctPredicates_yieldDistinctFilteringResults() {
         FollowupDescriptionContainsKeywordsPredicate firstPredicate =
-                new FollowupDescriptionContainsKeywordsPredicate(List.of("first"));
+                new FollowupDescriptionContainsKeywordsPredicate(List.of("A"));
         FollowupDescriptionContainsKeywordsPredicate secondPredicate =
-                new FollowupDescriptionContainsKeywordsPredicate(List.of("second"));
+                new FollowupDescriptionContainsKeywordsPredicate(List.of("B"));
 
         FindFollowupsCommand firstCommand = new FindFollowupsCommand(firstPredicate);
         FindFollowupsCommand secondCommand = new FindFollowupsCommand(secondPredicate);
 
-        assertTrue(firstCommand.equals(firstCommand));
-        assertTrue(firstCommand.equals(new FindFollowupsCommand(firstPredicate)));
-        assertFalse(firstCommand.equals(secondCommand));
-        assertFalse(firstCommand.equals(1));
-        assertFalse(firstCommand.equals(null));
+        Model modelForFirst = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Model modelForSecond = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+
+        CommandResult firstResult = firstCommand.execute(modelForFirst);
+        CommandResult secondResult = secondCommand.execute(modelForSecond);
+
+        assertEquals(String.format(MESSAGE_FOLLOWUPS_LISTED_OVERVIEW, 1), firstResult.getFeedbackToUser());
+        assertEquals(String.format(MESSAGE_FOLLOWUPS_LISTED_OVERVIEW, 1), secondResult.getFeedbackToUser());
+
+        assertEquals(List.of(FOLLOWUP_A), modelForFirst.getFilteredFollowupList());
+        assertEquals(List.of(FOLLOWUP_B), modelForSecond.getFilteredFollowupList());
+    }
+
+    @Test
+    public void execute_samePredicateInstances_yieldIdenticalFilteringResults() {
+        FollowupDescriptionContainsKeywordsPredicate firstPredicate =
+                new FollowupDescriptionContainsKeywordsPredicate(List.of("A"));
+        FollowupDescriptionContainsKeywordsPredicate secondPredicate =
+                new FollowupDescriptionContainsKeywordsPredicate(List.of("A"));
+
+        FindFollowupsCommand firstCommand = new FindFollowupsCommand(firstPredicate);
+        FindFollowupsCommand secondCommand = new FindFollowupsCommand(secondPredicate);
+
+        Model modelForFirst = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Model modelForSecond = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+
+        CommandResult firstResult = firstCommand.execute(modelForFirst);
+        CommandResult secondResult = secondCommand.execute(modelForSecond);
+
+        assertEquals(firstResult.getFeedbackToUser(), secondResult.getFeedbackToUser());
+        assertEquals(modelForFirst.getFilteredFollowupList(), modelForSecond.getFilteredFollowupList());
+        assertEquals(List.of(FOLLOWUP_A), modelForFirst.getFilteredFollowupList());
     }
 
     @Test

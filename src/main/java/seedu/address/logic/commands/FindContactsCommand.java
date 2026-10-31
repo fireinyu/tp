@@ -29,24 +29,9 @@ public class FindContactsCommand extends Command {
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
-        model.updateFilteredContactList(predicate,
-                String.format("Filtered: \"%s\"", String.join(" ", predicate.getKeywords())));
+        model.updateFilteredContactList(predicate);
         return new CommandResult(
                 String.format(Messages.MESSAGE_CONTACTS_LISTED_OVERVIEW, model.getFilteredContactList().size()));
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-
-        // instanceof handles nulls
-        if (!(other instanceof FindContactsCommand otherFindContactsCommand)) {
-            return false;
-        }
-
-        return predicate.equals(otherFindContactsCommand.predicate);
     }
 
     @Override

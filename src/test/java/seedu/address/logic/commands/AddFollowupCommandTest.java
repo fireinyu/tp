@@ -77,7 +77,7 @@ public class AddFollowupCommandTest {
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.addFollowup(FOLLOWUP_A);
-        showFilteredContactList(expectedModel, target);
+        showContactAtIndex(expectedModel, INDEX_FIRST_CONTACT);
         assertCommandSuccess(addFollowupCommand, model, expectedMessage, expectedModel);
     }
 
@@ -154,12 +154,5 @@ public class AddFollowupCommandTest {
         assertEquals(expected, addFollowupCommand.toString());
     }
 
-    /**
-     * Updates {@code model}'s filtered list to show no followups.
-     */
-    private void showFilteredContactList(Model model, Contact target) {
-        model.updateFilteredContactList(p -> p.isSameContact(target));
 
-        assertEquals(1, model.getFilteredContactList().size());
-    }
 }

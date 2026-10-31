@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.IntStream;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.Titled;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
@@ -18,7 +19,7 @@ import seedu.address.model.tag.Tag;
  * Represents a Contact in the address book.
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
-public class Contact {
+public class Contact implements Titled {
 
     // Identity fields
     private final Name name;
@@ -57,6 +58,16 @@ public class Contact {
 
     public Name getName() {
         return name;
+    }
+
+    @Override
+    public String getInstanceTitle() {
+        return name.toString();
+    }
+
+    @Override
+    public String getTypeTitle() {
+        return "Contact";
     }
 
     public Phone getPhone() {

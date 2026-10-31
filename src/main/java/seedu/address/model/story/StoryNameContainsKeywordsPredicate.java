@@ -1,46 +1,21 @@
 package seedu.address.model.story;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 
-import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.BaseKeywordPredicate;
+import seedu.address.model.contact.Contact;
 
 /**
  * Tests that a {@code Story}'s name matches any of the keywords given.
  */
-public class StoryNameContainsKeywordsPredicate implements Predicate<Story> {
-    private final List<String> keywords;
+public class StoryNameContainsKeywordsPredicate extends BaseKeywordPredicate<Story, Contact> {
 
     public StoryNameContainsKeywordsPredicate(List<String> keywords) {
-        this.keywords = keywords;
-    }
-
-    public List<String> getKeywords() {
-        return Collections.unmodifiableList(keywords);
+        super(keywords);
     }
 
     @Override
-    public boolean test(Story story) {
-        return keywords.stream()
-                .anyMatch(story::isNameMatching);
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-
-        if (!(other instanceof StoryNameContainsKeywordsPredicate otherPredicate)) {
-            return false;
-        }
-
-        return keywords.equals(otherPredicate.keywords);
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).add("keywords", keywords).toString();
+    public boolean matchesKeyword(Story item, String keyword) {
+        return item.isNameMatching(keyword);
     }
 }

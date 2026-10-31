@@ -29,7 +29,9 @@ import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.followup.FollowupDescription;
+import seedu.address.model.followup.FollowupIsForContactPredicate;
 import seedu.address.model.story.Story;
+import seedu.address.model.story.StoryAssignedToContactPredicate;
 import seedu.address.testutil.ContactBuilder;
 import seedu.address.testutil.EditContactDescriptorBuilder;
 import seedu.address.testutil.StoryBuilder;
@@ -294,8 +296,8 @@ public class EditContactCommandTest {
         Followup followup = new Followup(new FollowupDescription("Follow up"), contactToEdit.getName());
         model.addFollowup(followup);
 
-        model.updateFilteredStoryList(contactToEdit);
-        model.updateFilteredFollowupList(contactToEdit);
+        model.updateFilteredStoryList(new StoryAssignedToContactPredicate(contactToEdit));
+        model.updateFilteredFollowupList(new FollowupIsForContactPredicate(contactToEdit));
 
         EditContactDescriptor descriptor = new EditContactDescriptorBuilder().withName(VALID_NAME_BOB).build();
         EditContactCommand editContactCommand = new EditContactCommand(INDEX_FIRST_CONTACT, descriptor);
@@ -305,16 +307,17 @@ public class EditContactCommandTest {
                 String.format(EditContactCommand.MESSAGE_EDIT_CONTACT_SUCCESS, Messages.format(editedContact));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-        expectedModel.updateFilteredStoryList(contactToEdit);
-        expectedModel.updateFilteredFollowupList(contactToEdit);
+        expectedModel.updateFilteredStoryList(new StoryAssignedToContactPredicate(contactToEdit));
+        expectedModel.updateFilteredFollowupList(new FollowupIsForContactPredicate(contactToEdit));
         expectedModel.setContact(contactToEdit, editedContact);
 
         assertCommandSuccess(editContactCommand, model, expectedMessage, expectedModel);
 
-        String expectedStatus = String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, editedContact.getName());
-        assertEquals(expectedStatus, model.getStoryFilterStatusProperty().getValue());
+        String expectedStoryStatus = new StoryAssignedToContactPredicate(editedContact).toString();
+        String expectedFollowupStatus = new FollowupIsForContactPredicate(editedContact).toString();
+        assertEquals(expectedStoryStatus, model.getStoryFilterStatusProperty().getValue());
         assertEquals(1, model.getFilteredStoryList().size());
-        assertEquals(expectedStatus, model.getFollowupFilterStatusProperty().getValue());
+        assertEquals(expectedFollowupStatus, model.getFollowupFilterStatusProperty().getValue());
         assertEquals(1, model.getFilteredFollowupList().size());
     }
 }

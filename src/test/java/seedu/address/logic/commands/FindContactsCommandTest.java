@@ -1,8 +1,6 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_CONTACTS_LISTED_OVERVIEW;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalContacts.CARL;
@@ -27,30 +25,47 @@ public class FindContactsCommandTest {
     private Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
     @Test
-    public void equals() {
+    public void execute_distinctPredicates_yieldDistinctFilteringResults() {
         NameContainsKeywordsPredicate firstPredicate =
-                new NameContainsKeywordsPredicate(List.of("first"));
+                new NameContainsKeywordsPredicate(List.of("Kurz"));
         NameContainsKeywordsPredicate secondPredicate =
-                new NameContainsKeywordsPredicate(List.of("second"));
+                new NameContainsKeywordsPredicate(List.of("Elle"));
 
         FindContactsCommand findFirstCommand = new FindContactsCommand(firstPredicate);
         FindContactsCommand findSecondCommand = new FindContactsCommand(secondPredicate);
 
-        // same object -> returns true
-        assertTrue(findFirstCommand.equals(findFirstCommand));
+        Model modelForFirst = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Model modelForSecond = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
-        // same values -> returns true
-        FindContactsCommand findFirstCommandCopy = new FindContactsCommand(firstPredicate);
-        assertTrue(findFirstCommand.equals(findFirstCommandCopy));
+        CommandResult firstResult = findFirstCommand.execute(modelForFirst);
+        CommandResult secondResult = findSecondCommand.execute(modelForSecond);
 
-        // different types -> returns false
-        assertFalse(findFirstCommand.equals(1));
+        assertEquals(String.format(MESSAGE_CONTACTS_LISTED_OVERVIEW, 1), firstResult.getFeedbackToUser());
+        assertEquals(String.format(MESSAGE_CONTACTS_LISTED_OVERVIEW, 1), secondResult.getFeedbackToUser());
 
-        // null -> returns false
-        assertFalse(findFirstCommand.equals(null));
+        assertEquals(List.of(CARL), modelForFirst.getFilteredContactList());
+        assertEquals(List.of(ELLE), modelForSecond.getFilteredContactList());
+    }
 
-        // different contact -> returns false
-        assertFalse(findFirstCommand.equals(findSecondCommand));
+    @Test
+    public void execute_samePredicateInstances_yieldIdenticalFilteringResults() {
+        NameContainsKeywordsPredicate firstPredicate =
+                new NameContainsKeywordsPredicate(List.of("Kurz"));
+        NameContainsKeywordsPredicate secondPredicate =
+                new NameContainsKeywordsPredicate(List.of("Kurz"));
+
+        FindContactsCommand findFirstCommand = new FindContactsCommand(firstPredicate);
+        FindContactsCommand findSecondCommand = new FindContactsCommand(secondPredicate);
+
+        Model modelForFirst = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        Model modelForSecond = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+
+        CommandResult firstResult = findFirstCommand.execute(modelForFirst);
+        CommandResult secondResult = findSecondCommand.execute(modelForSecond);
+
+        assertEquals(firstResult.getFeedbackToUser(), secondResult.getFeedbackToUser());
+        assertEquals(modelForFirst.getFilteredContactList(), modelForSecond.getFilteredContactList());
+        assertEquals(List.of(CARL), modelForFirst.getFilteredContactList());
     }
 
     @Test

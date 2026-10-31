@@ -1,9 +1,11 @@
 package seedu.address.testutil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import seedu.address.model.contact.Address;
 import seedu.address.model.contact.Contact;
@@ -68,6 +70,15 @@ public class ContactBuilder {
      */
     public ContactBuilder withTags(String ... tags) {
         this.tags = SampleDataUtil.getTagSet(tags);
+        return this;
+    }
+
+    /**
+     * Parses the {@code stories} into a {@code List<StoryName>}
+     * and sets it to the {@code Contact} that we are building.
+     */
+    public ContactBuilder withStories(String ... stories) {
+        this.stories = Arrays.stream(stories).map(StoryName::new).collect(Collectors.toList());
         return this;
     }
 
