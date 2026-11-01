@@ -1,0 +1,2430 @@
+# ==============================================================================
+
+# Comprehensive User String & Escape Character Test Suite
+
+# Target Commands: addstory, editstory
+
+#
+
+# Specification Tested:
+
+# 1. Escape character:
+
+#    - Backslash (\) escapes the next character if it is a forward slash (/).
+
+#    - An escape character used this way will not be part of the user string.
+
+#    - Otherwise, the escape character is treated as a normal character.
+
+# 2. User string:
+
+#    - Valid user string consists of 1+ characters and cannot start with space.
+
+#    - Any forward slash must be escaped (\/).
+
+#    - Any trailing spaces at the end of user strings are truncated.
+
+#    - Internal spaces are preserved.
+
+#    - Official examples: wumpus, wumpus farts, birthday 3\/12.
+
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+
+# Phase 1: Setup clean state
+
+# ------------------------------------------------------------------------------
+
+[SUCCESS] clear
+PressMemo has been cleared!
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+(empty)
+
+Followups Panel:
+(empty)
+
+# ------------------------------------------------------------------------------
+
+# Phase 2: Positive Tests - addstory with User Strings
+
+# ------------------------------------------------------------------------------
+
+# 2.1 Specification examples
+
+[SUCCESS] addstory wumpus
+Story "wumpus" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory wumpus farts
+Story "wumpus farts" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory birthday 3\/12
+Story "birthday 3/12" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+
+Followups Panel:
+(empty)
+
+# 2.2 Escaped forward slashes in story name
+
+[SUCCESS] addstory Budget 2026\/2027 Strategic Plan
+Story "Budget 2026/2027 Strategic Plan" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Press memo https:\/\/pressmemo.org
+Story "Press memo https://pressmemo.org" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Story ending with slash\/
+Story "Story ending with slash/" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+
+Followups Panel:
+(empty)
+
+# 2.3 Backslash preservation when not escaping a forward slash
+
+[SUCCESS] addstory File path C:\Reports\Story\2026
+Story "File path C:\Reports\Story\2026" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Story with literal \n and \t sequences
+Story "Story with literal \n and \t sequences" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Double backslash before slash \\/ test
+Story "Double backslash before slash \/ test" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Story ending with backslash\
+Story "Story ending with backslash\" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Standalone \ backslash
+Story "Standalone \ backslash" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+
+Followups Panel:
+(empty)
+
+# 2.4 Whitespace handling: trailing space truncation & internal spacing
+
+[SUCCESS] addstory Trailing spaces truncated
+Story "Trailing spaces truncated" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Internal     multiple     spaces    preserved
+Story "Internal     multiple     spaces    preserved" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+
+Followups Panel:
+(empty)
+
+# 2.5 Tags with user strings and escaped slashes
+
+[SUCCESS] addstory Tagged Story Alpha t/release\/v1
+Story "Tagged Story Alpha" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Tagged Story Beta t/date 3\/12 t/news\/special
+Story "Tagged Story Beta" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Tagged Story Gamma t/win\tag t/C:\news
+Story "Tagged Story Gamma" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Tagged Story Delta t/trailing tag spaces
+Story "Tagged Story Delta" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Tagged Story Epsilon t/duplicate\/tag t/duplicate\/tag
+Story "Tagged Story Epsilon" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+
+Followups Panel:
+(empty)
+
+# 2.6 Prefix-delimiter edge cases
+
+[SUCCESS] addstory Story with fake tag t\/urgent in title
+Story "Story with fake tag t/urgent in title" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Story with fake name n\/Alice in title
+Story "Story with fake name n/Alice in title" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Spaced before tag        t/valid-tag
+Story "Spaced before tag" has been added.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# ------------------------------------------------------------------------------
+
+# Phase 3: Negative Tests - addstory with Invalid User Strings
+
+# ------------------------------------------------------------------------------
+
+# 3.1 Unescaped forward slash in story name
+
+[ERROR] addstory unescaped/slash
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory /leading slash
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory trailing slash/
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory standalone / slash
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory multiple/unescaped/slashes
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# 3.2 Unescaped forward slash in tags
+
+[ERROR] addstory Valid Story t/unescaped/tag
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory Valid Story t//leading slash
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory Valid Story t/trailing slash/
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory Valid Story t//
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# 3.3 Mixed escaped and unescaped forward slashes
+
+[ERROR] addstory valid\/escaped then unescaped/here
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory unescaped/here then valid\/escaped
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory Valid Story t/valid\/tag t/invalid/tag
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# 3.4 Invalid escaping patterns
+
+[ERROR] addstory spaced escape \ / slash
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory wrong direction /\ combo
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory partially escaped \// combo
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# 3.5 Command syntax, domain constraints & edge cases
+
+[ERROR] addstory
+Invalid command format!
+addstory: Adds a story to PressMemo. Parameters: NAME [t/TAG]...
+Example: addstory hellot/ Singapore
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory
+Invalid command format!
+addstory: Adds a story to PressMemo. Parameters: NAME [t/TAG]...
+Example: addstory hellot/ Singapore
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory t/tagonly
+Invalid command format!
+addstory: Adds a story to PressMemo. Parameters: NAME [t/TAG]...
+Example: addstory hellot/ Singapore
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory Valid Story t/
+Unexpected error: Tag names can take any values except forward slash (/), and should not be blank
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory Valid Story t/
+Unexpected error: Tag names can take any values except forward slash (/), and should not be blank
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory wumpus
+Error: there is already a story named "wumpus"!
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] addstory \/slashatstart
+Unexpected error: Names can take any values except forward slash (/), and should not be blank
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# ------------------------------------------------------------------------------
+
+# Phase 4: Positive Tests - editstory with User Strings
+
+# ------------------------------------------------------------------------------
+
+# 4.1 Edit story name with escaped forward slashes
+
+[SUCCESS] editstory 1 n/wumpus 2\/0
+Edited story: wumpus 2/0
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus 2/0
+2. wumpus farts
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] editstory 2 n/wumpus farts 2026\/Q4\/final
+Edited story: wumpus farts 2026/Q4/final
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus 2/0
+2. wumpus farts 2026/Q4/final
+3. birthday 3/12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] editstory 3 n/birthday https:\/\/archive.org\/3-12
+Edited story: birthday https://archive.org/3-12
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus 2/0
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# 4.2 Edit story name with backslash preservation
+
+[SUCCESS] editstory 1 n/C:\news\wumpus
+Edited story: C:\news\wumpus
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. C:\news\wumpus
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] editstory 1 n/wumpus \\/ combo
+Edited story: wumpus \/ combo
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus \/ combo
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] editstory 1 n/wumpus with trailing backslash\
+Edited story: wumpus with trailing backslash\
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus with trailing backslash\
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# 4.3 Edit story name with whitespace truncation
+
+[SUCCESS] editstory 1 n/wumpus trimmed spaces
+Edited story: wumpus trimmed spaces
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus trimmed spaces
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] editstory 1 n/wumpus    wide    spaces
+Edited story: wumpus    wide    spaces
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus    wide    spaces
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# 4.4 Edit tags with user strings & escaped slashes
+
+[SUCCESS] editstory 1 t/v1\/patch t/v2\/final
+Edited story: wumpus    wide    spaces; Tags: [v1/patch][v2/final]
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus    wide    spaces; Tags: [v1/patch][v2/final]
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] editstory 1 t/win\docs t/news
+Edited story: wumpus    wide    spaces; Tags: [news][win\docs]
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus    wide    spaces; Tags: [news][win\docs]
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] editstory 1 t/trimmed tag spaces
+Edited story: wumpus    wide    spaces; Tags: [trimmed tag spaces]
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. wumpus    wide    spaces; Tags: [trimmed tag spaces]
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# 4.5 Edit both name and tags simultaneously
+
+[SUCCESS] editstory 1 n/Exclusive 3\/12 Scoop t/special\/scoop t/year\2026
+Edited story: Exclusive 3/12 Scoop; Tags: [year\2026][special/scoop]
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Exclusive 3/12 Scoop; Tags: [year\2026][special/scoop]
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# 4.6 Reset/clear tags using empty tag prefix
+
+[SUCCESS] editstory 1 t/
+Edited story: Exclusive 3/12 Scoop
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Exclusive 3/12 Scoop
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# 4.7 Prefix delimiter edge cases in editstory
+
+[SUCCESS] editstory 1 n/Title with fake tag t\/test inside
+Edited story: Title with fake tag t/test inside
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# ------------------------------------------------------------------------------
+
+# Phase 5: Negative Tests - editstory with Invalid User Strings
+
+# ------------------------------------------------------------------------------
+
+# 5.1 Unescaped forward slash in story name (n/)
+
+[ERROR] editstory 1 n/unescaped/name
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory 1 n//
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory 1 n//leading slash
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory 1 n/trailing slash/
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# 5.2 Unescaped forward slash in tags (t/)
+
+[ERROR] editstory 1 t/unescaped/tag
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory 1 t/valid\/tag t/invalid/tag
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory 1 t//
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# 5.3 Unescaped forward slash in index / preamble
+
+[ERROR] editstory 1/2 n/Valid Name
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# 5.4 Invalid escaping patterns in editstory
+
+[ERROR] editstory 1 n/spaced escape \ / here
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory 1 t/spaced escape \ / tag
+Any forward slash must be escaped.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# 5.5 Command syntax, missing fields & domain constraints
+
+[ERROR] editstory
+Invalid command format!
+editstory: Edits the details of the story identified by the index number used in the displayed story list. Existing values will be overwritten by the input values.
+Parameters: INDEX (must be a positive integer) [n/STORYNAME] [t/TAG]...
+Example: editstory 1 n/Investigation t/Singapore
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory 1
+At least one field to edit must be provided.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory 1 n/
+Unexpected error: Names can take any values except forward slash (/), and should not be blank
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory 1 n/
+Unexpected error: Names can take any values except forward slash (/), and should not be blank
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory 0 n/Valid Name
+Invalid command format!
+editstory: Edits the details of the story identified by the index number used in the displayed story list. Existing values will be overwritten by the input values.
+Parameters: INDEX (must be a positive integer) [n/STORYNAME] [t/TAG]...
+Example: editstory 1 n/Investigation t/Singapore
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory -5 n/Valid Name
+Invalid command format!
+editstory: Edits the details of the story identified by the index number used in the displayed story list. Existing values will be overwritten by the input values.
+Parameters: INDEX (must be a positive integer) [n/STORYNAME] [t/TAG]...
+Example: editstory 1 n/Investigation t/Singapore
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory abc n/Valid Name
+Invalid command format!
+editstory: Edits the details of the story identified by the index number used in the displayed story list. Existing values will be overwritten by the input values.
+Parameters: INDEX (must be a positive integer) [n/STORYNAME] [t/TAG]...
+Example: editstory 1 n/Investigation t/Singapore
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory 999 n/Valid Name
+The story index provided is invalid.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory 1 n/First Name n/Second Name
+Multiple values specified for the following single-valued field(s): n/
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+[ERROR] editstory 2 n/Title with fake tag t\/test inside
+This story already exists in PressMemo.
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+
+# ------------------------------------------------------------------------------
+
+# Phase 6: Final State Verification
+
+# ------------------------------------------------------------------------------
+
+[SUCCESS] liststories
+Listed all 21 story(ies).
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Title with fake tag t/test inside
+2. wumpus farts 2026/Q4/final
+3. birthday https://archive.org/3-12
+4. Budget 2026/2027 Strategic Plan
+5. Press memo https://pressmemo.org
+6. Story ending with slash/
+7. File path C:\Reports\Story\2026
+8. Story with literal \n and \t sequences
+9. Double backslash before slash \/ test
+10. Story ending with backslash\
+11. Standalone \ backslash
+12. Trailing spaces truncated
+13. Internal     multiple     spaces    preserved
+14. Tagged Story Alpha; Tags: [release/v1]
+15. Tagged Story Beta; Tags: [date 3/12][news/special]
+16. Tagged Story Gamma; Tags: [win\tag][C:\news]
+17. Tagged Story Delta; Tags: [trailing tag spaces]
+18. Tagged Story Epsilon; Tags: [duplicate/tag]
+19. Story with fake tag t/urgent in title
+20. Story with fake name n/Alice in title
+21. Spaced before tag; Tags: [valid-tag]
+
+Followups Panel:
+(empty)
+

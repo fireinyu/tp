@@ -2,11 +2,17 @@
 # Comprehensive Active Filter Persistence & Reset Test Suite
 #
 # Tests the following behaviors:
-# 1. After edit/add/delete/assign/unassign commands, active filters for each
-#    panel are not removed and are updated to reflect changes in underlying
-#    domain objects.
-# 2. When the domain object used in an active filter is deleted, that filter
-#    is reset to ListAllPredicate.
+# 1. After each edit/add/delete/assign/unassign command, the active filters for each
+#    panel are not removed. Instead, they are updated to reflect any changes in the
+#    underlying domain object.
+# 2. Both find-type (keyword) and list-type (linked) filter commands are tested.
+# 3. Situations where multiple panels have active filters simultaneously:
+#    - All panels active with linked filters
+#    - All panels active with find-type filters
+#    - Multiple panels active with a mix of linked and find-type filters
+# 4. Exception rule: when the domain object used in an active filter is deleted,
+#    that filter is reset to the ListAllPredicate. Deleting unrelated entities or
+#    entities matching find-type filters does NOT reset the active filters.
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
@@ -16,107 +22,219 @@ clear
 addcontact n/Alice Smith p/91111111 e/alice@example.com a/123 Jurong West Ave 6
 addcontact n/Bob Tan p/92222222 e/bob@example.com a/456 Clementi Ave 3
 addcontact n/Charlie Lee p/93333333 e/charlie@example.com a/789 Tampines St 11
+addcontact n/Diana Prince p/94444444 e/diana@example.com a/505 Yishun Ave 4
 addstory Tech Monopoly Investigation
 addstory Green Energy Transition
 addstory Healthcare Reforms
 addfollowup Interview tech CEO ci/1
 addfollowup Review financial disclosures ci/1
-addfollowup Cross check sources with hospital ci/2
+addfollowup Inspect solar farm site ci/2
+addfollowup Cross check sources with hospital ci/3
 assign ci/1 si/1
 assign ci/1 si/2
 assign ci/2 si/1
 assign ci/3 si/2
 
 # ------------------------------------------------------------------------------
-# Phase 2: Active Filters on Stories and Followups Panels
-# Set filters: Stories panel filtered by Alice Smith (ci/1), Followups panel filtered by Alice Smith (ci/1)
+# Phase 2: Simultaneous Linked Active Filters Across All Panels & Mutations
+# Set linked filters on all three panels:
+# - Contacts panel filtered by Story 1 (Tech Monopoly Investigation)
+# - Stories panel filtered by Contact 1 (Alice Smith)
+# - Followups panel filtered by Contact 1 (Alice Smith)
 # ------------------------------------------------------------------------------
+listcontacts si/1
 liststories ci/1
 listfollowups ci/1
 
-# Test 2.1: Edit an unrelated contact (Bob Tan) - active filters on Alice must be preserved
-editcontact 2 p/98882222
+# Test 2.1: editcontact on the active filter target (Alice Smith -> Alicia Smith)
+# Active filter on Contacts panel persists and updates Alice in place.
+# Active filters on Stories & Followups panels persist and update their target key to Alicia Smith.
+editcontact 1 n/Alicia Smith p/91119999
 
-# Test 2.2: Edit the underlying domain object (Alice Smith -> Alicia Smith)
-# Active filters for Stories & Followups must not be removed and must reflect the updated name
-editcontact 1 n/Alicia Smith
+# Test 2.2: editstory on the active filter target (Tech Monopoly -> Big Tech Monopoly)
+# Active filter on Stories panel persists and updates story name.
+# Active filter on Contacts panel persists and updates its target key to Big Tech Monopoly.
+# Followups panel filter persists unchanged.
+editstory 1 n/Big Tech Monopoly Investigation
 
-# Test 2.3: Edit a followup for Alicia Smith - active filter on Followups panel must be preserved
+# Test 2.3: editfollowup on Alicia's followup
+# Active filter on Followups panel persists and displays the updated description.
+# Contacts and Stories panel filters persist unchanged.
 editfollowup 1 d/Urgent interview tech CEO
 
-# Test 2.4: Assign command - assign Bob Tan to Green Energy Transition
-# Stories panel filter for Alicia Smith is not removed; Green Energy updates its contact list
+# Test 2.4: assign command
+# Assign Bob Tan (contact 2 in Contacts panel) to Green Energy Transition (story 2 in Stories panel).
+# Active filters on all three panels persist; Green Energy updates its contact list.
 assign ci/2 si/2
 
-# Test 2.5: Unassign command - unassign Alicia Smith from Green Energy Transition
-# Filter is preserved; Green Energy no longer matches filter and disappears from Stories panel
+# Test 2.5: unassign command
+# Unassign Alicia Smith (contact 1 in Contacts panel) from Green Energy Transition (story 2 in Stories panel).
+# Active filter on Stories panel persists: Green Energy no longer matches and disappears.
+# Contacts and Followups panel filters persist unchanged.
 unassign ci/1 si/2
 
-# Test 2.6: Add command - add new contact Diana Prince
-# Active filters for Stories and Followups panels are not removed
-addcontact n/Diana Prince p/94444444 e/diana@example.com a/505 Yishun Ave 4
+# Test 2.6: addcontact command
+# Contacts panel resets to show all contacts (so new contact is visible).
+# Active filters on Stories and Followups panels are NOT removed.
+addcontact n/Edward Norton p/95555555 e/edward@example.com a/606 Bedok Reservoir Rd
 
-# Test 2.7: Delete an entity NOT used in active filter (Diana Prince, contact 4)
-# Active filters for Stories and Followups panels (keyed on Alicia Smith) must be preserved
-deletecontact 4
+# Test 2.7: addstory command
+# Stories panel resets to show all stories (so new story is visible).
+# Active filter on Followups panel is NOT removed.
+addstory AI Governance Framework
 
-# Test 2.8: Delete a followup for Alicia Smith (deletefollowup 2: Review financial disclosures)
-# Active filter on Followups panel is preserved, showing the remaining followup
+# Test 2.8: addfollowup command
+# Add a followup for Edward Norton (contact 5 in Contacts panel).
+# Followups panel resets to show all followups.
+addfollowup Draft AI ethics guideline ci/5
+
+# Test 2.9: deletefollowup command
+# Filter Followups panel by Alicia Smith (contact 1 in Contacts panel).
+listfollowups ci/1
+# Delete followup 2 (Review financial disclosures).
+# Active filter on Followups panel persists, showing only remaining followup for Alicia.
 deletefollowup 2
 
 # ------------------------------------------------------------------------------
-# Phase 3: Active Filter on Contacts Panel
-# Set filter: Contacts panel filtered by Tech Monopoly Investigation (si/1)
+# Phase 3: Simultaneous Find-Type Active Filters Across All Panels & Mutations
+# Set keyword filters on all three panels:
+# - Contacts panel: findcontacts Bob Diana
+# - Stories panel: findstories Big Green
+# - Followups panel: findfollowups solar ethics
 # ------------------------------------------------------------------------------
-listcontacts si/1
+findcontacts Bob Diana
+findstories Big Green
+findfollowups solar ethics
 
-# Test 3.1: Edit the underlying domain object (Tech Monopoly Investigation -> Big Tech Monopoly Investigation)
-# Active filter on Contacts panel must not be removed and must reflect updated story name
-editstory 1 n/Big Tech Monopoly Investigation
+# Test 3.1: editcontact under simultaneous find filters
+# Edit Bob Tan's phone number. Find filters across all panels are NOT removed.
+editcontact 1 p/98882222
 
-# Test 3.2: Edit a contact shown in the filtered Contacts panel
-# Contacts panel filter must be preserved and contact updated in place
-editcontact 1 p/91119999
+# Test 3.2: editstory under simultaneous find filters
+# Edit Green Energy Transition to add a tag. Find filters across all panels are NOT removed.
+editstory 2 t/Renewable
 
-# Test 3.3: Unassign command - unassign Bob Tan from Big Tech Monopoly Investigation
-# Filter is preserved; Bob Tan no longer matches filter and disappears from Contacts panel
-unassign ci/2 si/1
+# Test 3.3: editfollowup under simultaneous find filters
+# Edit followup 2 description while keeping keyword 'ethics'. Find filters are NOT removed.
+editfollowup 2 d/Publish AI ethics guideline
 
-# Test 3.4: Add command - add a followup for Alicia Smith
-# Active filter on Contacts panel is not removed
-addfollowup Prepare court testimony ci/1
+# Test 3.4: assign under simultaneous find filters
+# Assign Diana Prince (contact 2 in Contacts panel) to Green Energy Transition (story 2 in Stories panel).
+# Find filters across all panels are NOT removed; domain objects update their associations.
+assign ci/2 si/2
 
-# ------------------------------------------------------------------------------
-# Phase 4: Exception Rule - Domain object used in active filter is deleted
-# ------------------------------------------------------------------------------
+# Test 3.5: unassign under simultaneous find filters
+# Unassign Diana Prince (contact 2) from Green Energy Transition (story 2).
+# Find filters across all panels are NOT removed.
+unassign ci/2 si/2
 
-# Test 4.1: Delete the Story used in Contacts panel active filter (Big Tech Monopoly Investigation, story 1)
-# Exception rule: Contacts panel active filter must reset to ListAllPredicate
+# Test 3.6: deletecontact under simultaneous find filters
+# Delete Diana Prince (contact 2 in Contacts panel).
+# Contacts panel find filter is NOT reset to show all contacts; Bob Tan remains visible.
+# Stories and Followups find filters are NOT removed.
+deletecontact 2
+
+# Test 3.7: deletestory under simultaneous find filters
+# Delete Big Tech Monopoly Investigation (story 1 in Stories panel).
+# Stories panel find filter is NOT reset to show all stories; Green Energy Transition remains visible.
+# Contacts panel find filter is NOT removed; Bob Tan updates in place.
 deletestory 1
 
-# Test 4.2: Delete a Story NOT used in Contacts panel active filter (Preservation Check)
-# Reset stories panel to show all stories so we can select Green Energy Transition
-liststories
-# Filter Contacts panel by Green Energy Transition (si/1)
-listcontacts si/1
-# Delete Healthcare Reforms (story 2, not Green Energy Transition)
-deletestory 2
-# Contacts panel active filter for Green Energy Transition must NOT be reset
+# Test 3.8: deletefollowup under simultaneous find filters
+# Delete followup 2 (Publish AI ethics guideline) from Followups panel.
+# Followups panel find filter is NOT reset to show all followups; solar farm site remains visible.
+deletefollowup 2
 
-# Test 4.3: Delete the Contact used in Stories and Followups panel active filters
-# First reset Contacts panel so Alicia Smith is at index 1
+# ------------------------------------------------------------------------------
+# Phase 4: Mixed Active Filters (Simultaneous Linked and Find-Type Filters)
+# Reset Contacts and Stories panels to allow selection of clean targets.
+# ------------------------------------------------------------------------------
 listcontacts
-# Filter Stories and Followups panels by Alicia Smith (ci/1)
-liststories ci/1
+liststories
+# Assign Edward Norton (contact 4 in Contacts panel) to Healthcare Reforms (story 2 in Stories panel)
+assign ci/4 si/2
+# Set mixed active filters:
+# - Contacts panel: find-type filter (findcontacts Alicia Charlie)
+# - Stories panel: linked filter by Charlie Lee (contact 2 in Contacts panel)
+# - Followups panel: find-type filter (findfollowups interview hospital)
+findcontacts Alicia Charlie
+liststories ci/2
+findfollowups interview hospital
+
+# Test 4.1: editcontact on Charlie Lee (rename to Charles Lee)
+# Contacts panel find filter persists; Charles Lee no longer matches 'Charlie' and disappears.
+# Stories panel linked filter persists and updates its key to Charles Lee.
+# Followups panel find filter persists and updates the contact name on the followup.
+editcontact 2 n/Charles Lee
+
+# Test 4.2: editcontact on Alicia Smith (update phone)
+# Contacts panel find filter persists; Alicia Smith stays visible with updated phone.
+# Stories and Followups panel filters persist unchanged.
+editcontact 1 p/91118888
+
+# Test 4.3: addstory under mixed filters
+# Stories panel resets to show all stories.
+# Contacts panel find filter and Followups panel find filter are NOT removed.
+addstory Cybersecurity Directives
+
+# ------------------------------------------------------------------------------
+# Phase 5: Exception Rule & Selective Resets
+# When the domain object used in an active filter is deleted, that filter is reset
+# to ListAllPredicate. Deleting unrelated entities does NOT reset the active filters.
+# ------------------------------------------------------------------------------
+
+# Test 5.1: Story linked active filter on Contacts panel
+# Reset Stories panel to all stories.
+liststories
+# Set Contacts panel linked filter to Healthcare Reforms (story 2 in Stories panel).
+listcontacts si/2
+# Set Followups panel linked filter to Edward Norton (contact 1 in Contacts panel).
 listfollowups ci/1
-# Exception rule: Delete Alicia Smith (contact 1)
-# Both Stories panel and Followups panel active filters must reset to ListAllPredicate
+
+# Test 5.1a: Deletion of a Story NOT used in Contacts active filter (Preservation Check)
+# Delete Cybersecurity Directives (story 4 in Stories panel).
+# Active filter on Contacts panel (Healthcare Reforms) is NOT reset.
+# Active filter on Followups panel (Edward Norton) is NOT reset.
+deletestory 4
+
+# Test 5.1b: EXCEPTION TRIGGER - Delete the Story used in Contacts active filter
+# Delete Healthcare Reforms (story 2 in Stories panel).
+# Contacts panel active filter MUST RESET to ListAllPredicate (showing all contacts).
+# Followups panel active filter (Edward Norton) was NOT tracking Healthcare Reforms, so it is NOT reset.
+deletestory 2
+
+# Test 5.2: Contact linked active filters on Stories and Followups panels
+# Reset Contacts panel to show all contacts.
+listcontacts
+# Assign Bob Tan (contact 2 in Contacts panel) to AI Governance Framework (story 2 in Stories panel).
+assign ci/2 si/2
+# Set linked filters on Stories and Followups panels for Bob Tan (contact 2 in Contacts panel).
+liststories ci/2
+listfollowups ci/2
+
+# Test 5.2a: Deletion of a Contact NOT used in active filters (Preservation Check)
+# Delete Charles Lee (contact 3 in Contacts panel).
+# Active filters on Stories and Followups panels (tracking Bob Tan) are NOT reset.
+deletecontact 3
+
+# Test 5.2b: EXCEPTION TRIGGER - Delete the Contact used in Stories and Followups active filters
+# Delete Bob Tan (contact 2 in Contacts panel).
+# Stories panel active filter MUST RESET to ListAllPredicate (showing all stories).
+# Followups panel active filter MUST RESET to ListAllPredicate (showing all followups).
+deletecontact 2
+
+# Test 5.3: Contrast with Find Filter Deletion
+# Find filters track keywords, NOT domain objects, so deleting matching entities does NOT reset the filter.
+findcontacts Alicia
+# Delete Alicia Smith (contact 1 in Contacts panel).
+# Contacts panel remains filtered by 'Alicia' (now empty); it is NOT reset to show Edward Norton.
 deletecontact 1
 
-# Test 4.4: Delete a Contact NOT used in Stories and Followups panel active filters (Preservation Check)
-# Filter Stories and Followups panels by Bob Tan (ci/1)
-liststories ci/1
-listfollowups ci/1
-# Delete Charlie Lee (contact 2, not Bob Tan)
-deletecontact 2
-# Active filters for Bob Tan on Stories and Followups panels must NOT be reset
+# ------------------------------------------------------------------------------
+# Phase 6: Resetting via List Commands
+# ------------------------------------------------------------------------------
+addcontact n/Zoe Clark p/96666666 e/zoe@example.com a/707 Tampines Ave 5
+listcontacts
+liststories
+listfollowups
+list

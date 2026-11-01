@@ -1,0 +1,1329 @@
+# ==============================================================================
+
+# Comprehensive Active Filter Persistence & Reset Test Suite
+
+#
+
+# Tests the following behaviors:
+
+# 1. After each edit/add/delete/assign/unassign command, the active filters for each
+
+#    panel are not removed. Instead, they are updated to reflect any changes in the
+
+#    underlying domain object.
+
+# 2. Both find-type (keyword) and list-type (linked) filter commands are tested.
+
+# 3. Situations where multiple panels have active filters simultaneously:
+
+#    - All panels active with linked filters
+
+#    - All panels active with find-type filters
+
+#    - Multiple panels active with a mix of linked and find-type filters
+
+# 4. Exception rule: when the domain object used in an active filter is deleted,
+
+#    that filter is reset to the ListAllPredicate. Deleting unrelated entities or
+
+#    entities matching find-type filters does NOT reset the active filters.
+
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+
+# Phase 1: Setup clean initial test data
+
+# ------------------------------------------------------------------------------
+
+[SUCCESS] clear
+PressMemo has been cleared!
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+(empty)
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addcontact n/Alice Smith p/91111111 e/alice@example.com a/123 Jurong West Ave 6
+New contact added: Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+
+Stories Panel:
+(empty)
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addcontact n/Bob Tan p/92222222 e/bob@example.com a/456 Clementi Ave 3
+New contact added: Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: 
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: 
+
+Stories Panel:
+(empty)
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addcontact n/Charlie Lee p/93333333 e/charlie@example.com a/789 Tampines St 11
+New contact added: Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: 
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: 
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: 
+
+Stories Panel:
+(empty)
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addcontact n/Diana Prince p/94444444 e/diana@example.com a/505 Yishun Ave 4
+New contact added: Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: 
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: 
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+(empty)
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Tech Monopoly Investigation
+Story "Tech Monopoly Investigation" has been added.
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: 
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: 
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Tech Monopoly Investigation
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Green Energy Transition
+Story "Green Energy Transition" has been added.
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: 
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: 
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Tech Monopoly Investigation
+2. Green Energy Transition
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addstory Healthcare Reforms
+Story "Healthcare Reforms" has been added.
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: 
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: 
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Tech Monopoly Investigation
+2. Green Energy Transition
+3. Healthcare Reforms
+
+Followups Panel:
+(empty)
+
+[SUCCESS] addfollowup Interview tech CEO ci/1
+Followup Interview tech CEO has been added to Alice Smith.
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: 
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: 
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Tech Monopoly Investigation
+2. Green Energy Transition
+3. Healthcare Reforms
+
+Followups Panel:
+1. Interview tech CEO; Contact: Alice Smith
+
+[SUCCESS] addfollowup Review financial disclosures ci/1
+Followup Review financial disclosures has been added to Alice Smith.
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: 
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: 
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Tech Monopoly Investigation
+2. Green Energy Transition
+3. Healthcare Reforms
+
+Followups Panel:
+1. Interview tech CEO; Contact: Alice Smith
+2. Review financial disclosures; Contact: Alice Smith
+
+[SUCCESS] addfollowup Inspect solar farm site ci/2
+Followup Inspect solar farm site has been added to Bob Tan.
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: 
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: 
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Tech Monopoly Investigation
+2. Green Energy Transition
+3. Healthcare Reforms
+
+Followups Panel:
+1. Interview tech CEO; Contact: Alice Smith
+2. Review financial disclosures; Contact: Alice Smith
+3. Inspect solar farm site; Contact: Bob Tan
+
+[SUCCESS] addfollowup Cross check sources with hospital ci/3
+Followup Cross check sources with hospital has been added to Charlie Lee.
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: 
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: 
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Tech Monopoly Investigation
+2. Green Energy Transition
+3. Healthcare Reforms
+
+Followups Panel:
+1. Interview tech CEO; Contact: Alice Smith
+2. Review financial disclosures; Contact: Alice Smith
+3. Inspect solar farm site; Contact: Bob Tan
+4. Cross check sources with hospital; Contact: Charlie Lee
+
+[SUCCESS] assign ci/1 si/1
+Assigned Alice Smith to Tech Monopoly Investigation
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Tech Monopoly Investigation]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: 
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: 
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Tech Monopoly Investigation; Contacts: [Alice Smith]
+2. Green Energy Transition
+3. Healthcare Reforms
+
+Followups Panel:
+1. Interview tech CEO; Contact: Alice Smith
+2. Review financial disclosures; Contact: Alice Smith
+3. Inspect solar farm site; Contact: Bob Tan
+4. Cross check sources with hospital; Contact: Charlie Lee
+
+[SUCCESS] assign ci/1 si/2
+Assigned Alice Smith to Green Energy Transition
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Tech Monopoly Investigation][Green Energy Transition]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: 
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: 
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Tech Monopoly Investigation; Contacts: [Alice Smith]
+2. Green Energy Transition; Contacts: [Alice Smith]
+3. Healthcare Reforms
+
+Followups Panel:
+1. Interview tech CEO; Contact: Alice Smith
+2. Review financial disclosures; Contact: Alice Smith
+3. Inspect solar farm site; Contact: Bob Tan
+4. Cross check sources with hospital; Contact: Charlie Lee
+
+[SUCCESS] assign ci/2 si/1
+Assigned Bob Tan to Tech Monopoly Investigation
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Tech Monopoly Investigation][Green Energy Transition]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Tech Monopoly Investigation]
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: 
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Tech Monopoly Investigation; Contacts: [Alice Smith][Bob Tan]
+2. Green Energy Transition; Contacts: [Alice Smith]
+3. Healthcare Reforms
+
+Followups Panel:
+1. Interview tech CEO; Contact: Alice Smith
+2. Review financial disclosures; Contact: Alice Smith
+3. Inspect solar farm site; Contact: Bob Tan
+4. Cross check sources with hospital; Contact: Charlie Lee
+
+[SUCCESS] assign ci/3 si/2
+Assigned Charlie Lee to Green Energy Transition
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Tech Monopoly Investigation][Green Energy Transition]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Tech Monopoly Investigation]
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Tech Monopoly Investigation; Contacts: [Alice Smith][Bob Tan]
+2. Green Energy Transition; Contacts: [Alice Smith][Charlie Lee]
+3. Healthcare Reforms
+
+Followups Panel:
+1. Interview tech CEO; Contact: Alice Smith
+2. Review financial disclosures; Contact: Alice Smith
+3. Inspect solar farm site; Contact: Bob Tan
+4. Cross check sources with hospital; Contact: Charlie Lee
+
+# ------------------------------------------------------------------------------
+
+# Phase 2: Simultaneous Linked Active Filters Across All Panels & Mutations
+
+# Set linked filters on all three panels:
+
+# - Contacts panel filtered by Story 1 (Tech Monopoly Investigation)
+
+# - Stories panel filtered by Contact 1 (Alice Smith)
+
+# - Followups panel filtered by Contact 1 (Alice Smith)
+
+# ------------------------------------------------------------------------------
+
+[SUCCESS] listcontacts si/1
+Listed 2 contact(s) assigned to Tech Monopoly Investigation
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Tech Monopoly Investigation][Green Energy Transition]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Tech Monopoly Investigation]
+
+Stories Panel:
+1. Tech Monopoly Investigation; Contacts: [Alice Smith][Bob Tan]
+2. Green Energy Transition; Contacts: [Alice Smith][Charlie Lee]
+3. Healthcare Reforms
+
+Followups Panel:
+1. Interview tech CEO; Contact: Alice Smith
+2. Review financial disclosures; Contact: Alice Smith
+3. Inspect solar farm site; Contact: Bob Tan
+4. Cross check sources with hospital; Contact: Charlie Lee
+
+[SUCCESS] liststories ci/1
+Listed 2 story(ies) assigned to Alice Smith
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Tech Monopoly Investigation][Green Energy Transition]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Tech Monopoly Investigation]
+
+Stories Panel:
+1. Tech Monopoly Investigation; Contacts: [Alice Smith][Bob Tan]
+2. Green Energy Transition; Contacts: [Alice Smith][Charlie Lee]
+
+Followups Panel:
+1. Interview tech CEO; Contact: Alice Smith
+2. Review financial disclosures; Contact: Alice Smith
+3. Inspect solar farm site; Contact: Bob Tan
+4. Cross check sources with hospital; Contact: Charlie Lee
+
+[SUCCESS] listfollowups ci/1
+Listed 2 followup(s) assigned to Alice Smith
+
+Contacts Panel:
+1. Alice Smith; Phone: 91111111; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Tech Monopoly Investigation][Green Energy Transition]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Tech Monopoly Investigation]
+
+Stories Panel:
+1. Tech Monopoly Investigation; Contacts: [Alice Smith][Bob Tan]
+2. Green Energy Transition; Contacts: [Alice Smith][Charlie Lee]
+
+Followups Panel:
+1. Interview tech CEO; Contact: Alice Smith
+2. Review financial disclosures; Contact: Alice Smith
+
+# Test 2.1: editcontact on the active filter target (Alice Smith -> Alicia Smith)
+
+# Active filter on Contacts panel persists and updates Alice in place.
+
+# Active filters on Stories & Followups panels persist and update their target key to Alicia Smith.
+
+[SUCCESS] editcontact 1 n/Alicia Smith p/91119999
+Edited contact: Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Tech Monopoly Investigation][Green Energy Transition]
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Tech Monopoly Investigation][Green Energy Transition]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Tech Monopoly Investigation]
+
+Stories Panel:
+1. Tech Monopoly Investigation; Contacts: [Bob Tan][Alicia Smith]
+2. Green Energy Transition; Contacts: [Charlie Lee][Alicia Smith]
+
+Followups Panel:
+1. Interview tech CEO; Contact: Alicia Smith
+2. Review financial disclosures; Contact: Alicia Smith
+
+# Test 2.2: editstory on the active filter target (Tech Monopoly -> Big Tech Monopoly)
+
+# Active filter on Stories panel persists and updates story name.
+
+# Active filter on Contacts panel persists and updates its target key to Big Tech Monopoly.
+
+# Followups panel filter persists unchanged.
+
+[SUCCESS] editstory 1 n/Big Tech Monopoly Investigation
+Edited story: Big Tech Monopoly Investigation; Contacts: [Bob Tan][Alicia Smith]
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Green Energy Transition][Big Tech Monopoly Investigation]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation]
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Bob Tan][Alicia Smith]
+2. Green Energy Transition; Contacts: [Charlie Lee][Alicia Smith]
+
+Followups Panel:
+1. Interview tech CEO; Contact: Alicia Smith
+2. Review financial disclosures; Contact: Alicia Smith
+
+# Test 2.3: editfollowup on Alicia's followup
+
+# Active filter on Followups panel persists and displays the updated description.
+
+# Contacts and Stories panel filters persist unchanged.
+
+[SUCCESS] editfollowup 1 d/Urgent interview tech CEO
+Edited followup: Urgent interview tech CEO; Contact: Alicia Smith
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Green Energy Transition][Big Tech Monopoly Investigation]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation]
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Bob Tan][Alicia Smith]
+2. Green Energy Transition; Contacts: [Charlie Lee][Alicia Smith]
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+2. Review financial disclosures; Contact: Alicia Smith
+
+# Test 2.4: assign command
+
+# Assign Bob Tan (contact 2 in Contacts panel) to Green Energy Transition (story 2 in Stories panel).
+
+# Active filters on all three panels persist; Green Energy updates its contact list.
+
+[SUCCESS] assign ci/2 si/2
+Assigned Bob Tan to Green Energy Transition
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Green Energy Transition][Big Tech Monopoly Investigation]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Bob Tan][Alicia Smith]
+2. Green Energy Transition; Contacts: [Charlie Lee][Alicia Smith][Bob Tan]
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+2. Review financial disclosures; Contact: Alicia Smith
+
+# Test 2.5: unassign command
+
+# Unassign Alicia Smith (contact 1 in Contacts panel) from Green Energy Transition (story 2 in Stories panel).
+
+# Active filter on Stories panel persists: Green Energy no longer matches and disappears.
+
+# Contacts and Followups panel filters persist unchanged.
+
+[SUCCESS] unassign ci/1 si/2
+Unassigned Alicia Smith from Green Energy Transition
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Big Tech Monopoly Investigation]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Bob Tan][Alicia Smith]
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+2. Review financial disclosures; Contact: Alicia Smith
+
+# Test 2.6: addcontact command
+
+# Contacts panel resets to show all contacts (so new contact is visible).
+
+# Active filters on Stories and Followups panels are NOT removed.
+
+[SUCCESS] addcontact n/Edward Norton p/95555555 e/edward@example.com a/606 Bedok Reservoir Rd
+New contact added: Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Big Tech Monopoly Investigation]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+5. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Bob Tan][Alicia Smith]
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+2. Review financial disclosures; Contact: Alicia Smith
+
+# Test 2.7: addstory command
+
+# Stories panel resets to show all stories (so new story is visible).
+
+# Active filter on Followups panel is NOT removed.
+
+[SUCCESS] addstory AI Governance Framework
+Story "AI Governance Framework" has been added.
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Big Tech Monopoly Investigation]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+5. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Bob Tan][Alicia Smith]
+2. Green Energy Transition; Contacts: [Charlie Lee][Bob Tan]
+3. Healthcare Reforms
+4. AI Governance Framework
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+2. Review financial disclosures; Contact: Alicia Smith
+
+# Test 2.8: addfollowup command
+
+# Add a followup for Edward Norton (contact 5 in Contacts panel).
+
+# Followups panel resets to show all followups.
+
+[SUCCESS] addfollowup Draft AI ethics guideline ci/5
+Followup Draft AI ethics guideline has been added to Edward Norton.
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Big Tech Monopoly Investigation]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+5. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Bob Tan][Alicia Smith]
+2. Green Energy Transition; Contacts: [Charlie Lee][Bob Tan]
+3. Healthcare Reforms
+4. AI Governance Framework
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+2. Review financial disclosures; Contact: Alicia Smith
+3. Inspect solar farm site; Contact: Bob Tan
+4. Cross check sources with hospital; Contact: Charlie Lee
+5. Draft AI ethics guideline; Contact: Edward Norton
+
+# Test 2.9: deletefollowup command
+
+# Filter Followups panel by Alicia Smith (contact 1 in Contacts panel).
+
+[SUCCESS] listfollowups ci/1
+Listed 2 followup(s) assigned to Alicia Smith
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Big Tech Monopoly Investigation]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+5. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Bob Tan][Alicia Smith]
+2. Green Energy Transition; Contacts: [Charlie Lee][Bob Tan]
+3. Healthcare Reforms
+4. AI Governance Framework
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+2. Review financial disclosures; Contact: Alicia Smith
+
+# Delete followup 2 (Review financial disclosures).
+
+# Active filter on Followups panel persists, showing only remaining followup for Alicia.
+
+[SUCCESS] deletefollowup 2
+Deleted followup: Review financial disclosures; Contact: Alicia Smith
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: [Big Tech Monopoly Investigation]
+2. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+4. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+5. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Bob Tan][Alicia Smith]
+2. Green Energy Transition; Contacts: [Charlie Lee][Bob Tan]
+3. Healthcare Reforms
+4. AI Governance Framework
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+
+# ------------------------------------------------------------------------------
+
+# Phase 3: Simultaneous Find-Type Active Filters Across All Panels & Mutations
+
+# Set keyword filters on all three panels:
+
+# - Contacts panel: findcontacts Bob Diana
+
+# - Stories panel: findstories Big Green
+
+# - Followups panel: findfollowups solar ethics
+
+# ------------------------------------------------------------------------------
+
+[SUCCESS] findcontacts Bob Diana
+2 contact(s) listed!
+
+Contacts Panel:
+1. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+2. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Bob Tan][Alicia Smith]
+2. Green Energy Transition; Contacts: [Charlie Lee][Bob Tan]
+3. Healthcare Reforms
+4. AI Governance Framework
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+
+[SUCCESS] findstories Big Green
+2 story(ies) listed!
+
+Contacts Panel:
+1. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+2. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Bob Tan][Alicia Smith]
+2. Green Energy Transition; Contacts: [Charlie Lee][Bob Tan]
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+
+[SUCCESS] findfollowups solar ethics
+2 followup(s) listed!
+
+Contacts Panel:
+1. Bob Tan; Phone: 92222222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+2. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Bob Tan][Alicia Smith]
+2. Green Energy Transition; Contacts: [Charlie Lee][Bob Tan]
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+2. Draft AI ethics guideline; Contact: Edward Norton
+
+# Test 3.1: editcontact under simultaneous find filters
+
+# Edit Bob Tan's phone number. Find filters across all panels are NOT removed.
+
+[SUCCESS] editcontact 1 p/98882222
+Edited contact: Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+
+Contacts Panel:
+1. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+2. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Alicia Smith][Bob Tan]
+2. Green Energy Transition; Contacts: [Charlie Lee][Bob Tan]
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+2. Draft AI ethics guideline; Contact: Edward Norton
+
+# Test 3.2: editstory under simultaneous find filters
+
+# Edit Green Energy Transition to add a tag. Find filters across all panels are NOT removed.
+
+[SUCCESS] editstory 2 t/Renewable
+Edited story: Green Energy Transition; Tags: [Renewable]; Contacts: [Charlie Lee][Bob Tan]
+
+Contacts Panel:
+1. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+2. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Alicia Smith][Bob Tan]
+2. Green Energy Transition; Tags: [Renewable]; Contacts: [Charlie Lee][Bob Tan]
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+2. Draft AI ethics guideline; Contact: Edward Norton
+
+# Test 3.3: editfollowup under simultaneous find filters
+
+# Edit followup 2 description while keeping keyword 'ethics'. Find filters are NOT removed.
+
+[SUCCESS] editfollowup 2 d/Publish AI ethics guideline
+Edited followup: Publish AI ethics guideline; Contact: Edward Norton
+
+Contacts Panel:
+1. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+2. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Alicia Smith][Bob Tan]
+2. Green Energy Transition; Tags: [Renewable]; Contacts: [Charlie Lee][Bob Tan]
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+2. Publish AI ethics guideline; Contact: Edward Norton
+
+# Test 3.4: assign under simultaneous find filters
+
+# Assign Diana Prince (contact 2 in Contacts panel) to Green Energy Transition (story 2 in Stories panel).
+
+# Find filters across all panels are NOT removed; domain objects update their associations.
+
+[SUCCESS] assign ci/2 si/2
+Assigned Diana Prince to Green Energy Transition
+
+Contacts Panel:
+1. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+2. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: [Green Energy Transition]
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Alicia Smith][Bob Tan]
+2. Green Energy Transition; Tags: [Renewable]; Contacts: [Charlie Lee][Bob Tan][Diana Prince]
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+2. Publish AI ethics guideline; Contact: Edward Norton
+
+# Test 3.5: unassign under simultaneous find filters
+
+# Unassign Diana Prince (contact 2) from Green Energy Transition (story 2).
+
+# Find filters across all panels are NOT removed.
+
+[SUCCESS] unassign ci/2 si/2
+Unassigned Diana Prince from Green Energy Transition
+
+Contacts Panel:
+1. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+2. Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Alicia Smith][Bob Tan]
+2. Green Energy Transition; Tags: [Renewable]; Contacts: [Charlie Lee][Bob Tan]
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+2. Publish AI ethics guideline; Contact: Edward Norton
+
+# Test 3.6: deletecontact under simultaneous find filters
+
+# Delete Diana Prince (contact 2 in Contacts panel).
+
+# Contacts panel find filter is NOT reset to show all contacts; Bob Tan remains visible.
+
+# Stories and Followups find filters are NOT removed.
+
+[SUCCESS] deletecontact 2
+Deleted contact: Diana Prince; Phone: 94444444; Email: diana@example.com; Address: 505 Yishun Ave 4; Tags: ; Stories: 
+
+Contacts Panel:
+1. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Big Tech Monopoly Investigation][Green Energy Transition]
+
+Stories Panel:
+1. Big Tech Monopoly Investigation; Contacts: [Alicia Smith][Bob Tan]
+2. Green Energy Transition; Tags: [Renewable]; Contacts: [Charlie Lee][Bob Tan]
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+2. Publish AI ethics guideline; Contact: Edward Norton
+
+# Test 3.7: deletestory under simultaneous find filters
+
+# Delete Big Tech Monopoly Investigation (story 1 in Stories panel).
+
+# Stories panel find filter is NOT reset to show all stories; Green Energy Transition remains visible.
+
+# Contacts panel find filter is NOT removed; Bob Tan updates in place.
+
+[SUCCESS] deletestory 1
+Deleted story: Big Tech Monopoly Investigation; Contacts: [Alicia Smith][Bob Tan]
+
+Contacts Panel:
+1. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Green Energy Transition]
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Charlie Lee][Bob Tan]
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+2. Publish AI ethics guideline; Contact: Edward Norton
+
+# Test 3.8: deletefollowup under simultaneous find filters
+
+# Delete followup 2 (Publish AI ethics guideline) from Followups panel.
+
+# Followups panel find filter is NOT reset to show all followups; solar farm site remains visible.
+
+[SUCCESS] deletefollowup 2
+Deleted followup: Publish AI ethics guideline; Contact: Edward Norton
+
+Contacts Panel:
+1. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Green Energy Transition]
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Charlie Lee][Bob Tan]
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+
+# ------------------------------------------------------------------------------
+
+# Phase 4: Mixed Active Filters (Simultaneous Linked and Find-Type Filters)
+
+# Reset Contacts and Stories panels to allow selection of clean targets.
+
+# ------------------------------------------------------------------------------
+
+[SUCCESS] listcontacts
+Listed all 4 contact(s).
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Green Energy Transition]
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+4. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Charlie Lee][Bob Tan]
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+
+[SUCCESS] liststories
+Listed all 3 story(ies).
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Green Energy Transition]
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+4. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Charlie Lee][Bob Tan]
+2. Healthcare Reforms
+3. AI Governance Framework
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+
+# Assign Edward Norton (contact 4 in Contacts panel) to Healthcare Reforms (story 2 in Stories panel)
+
+[SUCCESS] assign ci/4 si/2
+Assigned Edward Norton to Healthcare Reforms
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Green Energy Transition]
+3. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+4. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: [Healthcare Reforms]
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Charlie Lee][Bob Tan]
+2. Healthcare Reforms; Contacts: [Edward Norton]
+3. AI Governance Framework
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+
+# Set mixed active filters:
+
+# - Contacts panel: find-type filter (findcontacts Alicia Charlie)
+
+# - Stories panel: linked filter by Charlie Lee (contact 2 in Contacts panel)
+
+# - Followups panel: find-type filter (findfollowups interview hospital)
+
+[SUCCESS] findcontacts Alicia Charlie
+2 contact(s) listed!
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Charlie Lee][Bob Tan]
+2. Healthcare Reforms; Contacts: [Edward Norton]
+3. AI Governance Framework
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+
+[SUCCESS] liststories ci/2
+Listed 1 story(ies) assigned to Charlie Lee
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Charlie Lee][Bob Tan]
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+
+[SUCCESS] findfollowups interview hospital
+2 followup(s) listed!
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Charlie Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Charlie Lee][Bob Tan]
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+2. Cross check sources with hospital; Contact: Charlie Lee
+
+# Test 4.1: editcontact on Charlie Lee (rename to Charles Lee)
+
+# Contacts panel find filter persists; Charles Lee no longer matches 'Charlie' and disappears.
+
+# Stories panel linked filter persists and updates its key to Charles Lee.
+
+# Followups panel find filter persists and updates the contact name on the followup.
+
+[SUCCESS] editcontact 2 n/Charles Lee
+Edited contact: Charles Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91119999; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Bob Tan][Charles Lee]
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+2. Cross check sources with hospital; Contact: Charles Lee
+
+# Test 4.2: editcontact on Alicia Smith (update phone)
+
+# Contacts panel find filter persists; Alicia Smith stays visible with updated phone.
+
+# Stories and Followups panel filters persist unchanged.
+
+[SUCCESS] editcontact 1 p/91118888
+Edited contact: Alicia Smith; Phone: 91118888; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91118888; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Bob Tan][Charles Lee]
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+2. Cross check sources with hospital; Contact: Charles Lee
+
+# Test 4.3: addstory under mixed filters
+
+# Stories panel resets to show all stories.
+
+# Contacts panel find filter and Followups panel find filter are NOT removed.
+
+[SUCCESS] addstory Cybersecurity Directives
+Story "Cybersecurity Directives" has been added.
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91118888; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Bob Tan][Charles Lee]
+2. Healthcare Reforms; Contacts: [Edward Norton]
+3. AI Governance Framework
+4. Cybersecurity Directives
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+2. Cross check sources with hospital; Contact: Charles Lee
+
+# ------------------------------------------------------------------------------
+
+# Phase 5: Exception Rule & Selective Resets
+
+# When the domain object used in an active filter is deleted, that filter is reset
+
+# to ListAllPredicate. Deleting unrelated entities does NOT reset the active filters.
+
+# ------------------------------------------------------------------------------
+
+# Test 5.1: Story linked active filter on Contacts panel
+
+# Reset Stories panel to all stories.
+
+[SUCCESS] liststories
+Listed all 4 story(ies).
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91118888; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Bob Tan][Charles Lee]
+2. Healthcare Reforms; Contacts: [Edward Norton]
+3. AI Governance Framework
+4. Cybersecurity Directives
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+2. Cross check sources with hospital; Contact: Charles Lee
+
+# Set Contacts panel linked filter to Healthcare Reforms (story 2 in Stories panel).
+
+[SUCCESS] listcontacts si/2
+Listed 1 contact(s) assigned to Healthcare Reforms
+
+Contacts Panel:
+1. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: [Healthcare Reforms]
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Bob Tan][Charles Lee]
+2. Healthcare Reforms; Contacts: [Edward Norton]
+3. AI Governance Framework
+4. Cybersecurity Directives
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+2. Cross check sources with hospital; Contact: Charles Lee
+
+# Set Followups panel linked filter to Edward Norton (contact 1 in Contacts panel).
+
+[SUCCESS] listfollowups ci/1
+Listed 0 followup(s) assigned to Edward Norton
+
+Contacts Panel:
+1. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: [Healthcare Reforms]
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Bob Tan][Charles Lee]
+2. Healthcare Reforms; Contacts: [Edward Norton]
+3. AI Governance Framework
+4. Cybersecurity Directives
+
+Followups Panel:
+(empty)
+
+# Test 5.1a: Deletion of a Story NOT used in Contacts active filter (Preservation Check)
+
+# Delete Cybersecurity Directives (story 4 in Stories panel).
+
+# Active filter on Contacts panel (Healthcare Reforms) is NOT reset.
+
+# Active filter on Followups panel (Edward Norton) is NOT reset.
+
+[SUCCESS] deletestory 4
+Deleted story: Cybersecurity Directives
+
+Contacts Panel:
+1. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: [Healthcare Reforms]
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Bob Tan][Charles Lee]
+2. Healthcare Reforms; Contacts: [Edward Norton]
+3. AI Governance Framework
+
+Followups Panel:
+(empty)
+
+# Test 5.1b: EXCEPTION TRIGGER - Delete the Story used in Contacts active filter
+
+# Delete Healthcare Reforms (story 2 in Stories panel).
+
+# Contacts panel active filter MUST RESET to ListAllPredicate (showing all contacts).
+
+# Followups panel active filter (Edward Norton) was NOT tracking Healthcare Reforms, so it is NOT reset.
+
+[SUCCESS] deletestory 2
+Deleted story: Healthcare Reforms; Contacts: [Edward Norton]
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91118888; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Green Energy Transition]
+3. Charles Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+4. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Bob Tan][Charles Lee]
+2. AI Governance Framework
+
+Followups Panel:
+(empty)
+
+# Test 5.2: Contact linked active filters on Stories and Followups panels
+
+# Reset Contacts panel to show all contacts.
+
+[SUCCESS] listcontacts
+Listed all 4 contact(s).
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91118888; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Green Energy Transition]
+3. Charles Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+4. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Bob Tan][Charles Lee]
+2. AI Governance Framework
+
+Followups Panel:
+(empty)
+
+# Assign Bob Tan (contact 2 in Contacts panel) to AI Governance Framework (story 2 in Stories panel).
+
+[SUCCESS] assign ci/2 si/2
+Assigned Bob Tan to AI Governance Framework
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91118888; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Green Energy Transition][AI Governance Framework]
+3. Charles Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+4. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Bob Tan][Charles Lee]
+2. AI Governance Framework; Contacts: [Bob Tan]
+
+Followups Panel:
+(empty)
+
+# Set linked filters on Stories and Followups panels for Bob Tan (contact 2 in Contacts panel).
+
+[SUCCESS] liststories ci/2
+Listed 2 story(ies) assigned to Bob Tan
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91118888; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Green Energy Transition][AI Governance Framework]
+3. Charles Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+4. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Bob Tan][Charles Lee]
+2. AI Governance Framework; Contacts: [Bob Tan]
+
+Followups Panel:
+(empty)
+
+[SUCCESS] listfollowups ci/2
+Listed 1 followup(s) assigned to Bob Tan
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91118888; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Green Energy Transition][AI Governance Framework]
+3. Charles Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+4. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Bob Tan][Charles Lee]
+2. AI Governance Framework; Contacts: [Bob Tan]
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+
+# Test 5.2a: Deletion of a Contact NOT used in active filters (Preservation Check)
+
+# Delete Charles Lee (contact 3 in Contacts panel).
+
+# Active filters on Stories and Followups panels (tracking Bob Tan) are NOT reset.
+
+[SUCCESS] deletecontact 3
+Deleted contact: Charles Lee; Phone: 93333333; Email: charlie@example.com; Address: 789 Tampines St 11; Tags: ; Stories: [Green Energy Transition]
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91118888; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Green Energy Transition][AI Governance Framework]
+3. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]; Contacts: [Bob Tan]
+2. AI Governance Framework; Contacts: [Bob Tan]
+
+Followups Panel:
+1. Inspect solar farm site; Contact: Bob Tan
+
+# Test 5.2b: EXCEPTION TRIGGER - Delete the Contact used in Stories and Followups active filters
+
+# Delete Bob Tan (contact 2 in Contacts panel).
+
+# Stories panel active filter MUST RESET to ListAllPredicate (showing all stories).
+
+# Followups panel active filter MUST RESET to ListAllPredicate (showing all followups).
+
+[SUCCESS] deletecontact 2
+Deleted contact: Bob Tan; Phone: 98882222; Email: bob@example.com; Address: 456 Clementi Ave 3; Tags: ; Stories: [Green Energy Transition][AI Governance Framework]
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91118888; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+2. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]
+2. AI Governance Framework
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+
+# Test 5.3: Contrast with Find Filter Deletion
+
+# Find filters track keywords, NOT domain objects, so deleting matching entities does NOT reset the filter.
+
+[SUCCESS] findcontacts Alicia
+1 contact(s) listed!
+
+Contacts Panel:
+1. Alicia Smith; Phone: 91118888; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]
+2. AI Governance Framework
+
+Followups Panel:
+1. Urgent interview tech CEO; Contact: Alicia Smith
+
+# Delete Alicia Smith (contact 1 in Contacts panel).
+
+# Contacts panel remains filtered by 'Alicia' (now empty); it is NOT reset to show Edward Norton.
+
+[SUCCESS] deletecontact 1
+Deleted contact: Alicia Smith; Phone: 91118888; Email: alice@example.com; Address: 123 Jurong West Ave 6; Tags: ; Stories: 
+
+Contacts Panel:
+(empty)
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]
+2. AI Governance Framework
+
+Followups Panel:
+(empty)
+
+# ------------------------------------------------------------------------------
+
+# Phase 6: Resetting via List Commands
+
+# ------------------------------------------------------------------------------
+
+[SUCCESS] addcontact n/Zoe Clark p/96666666 e/zoe@example.com a/707 Tampines Ave 5
+New contact added: Zoe Clark; Phone: 96666666; Email: zoe@example.com; Address: 707 Tampines Ave 5; Tags: ; Stories: 
+
+Contacts Panel:
+1. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+2. Zoe Clark; Phone: 96666666; Email: zoe@example.com; Address: 707 Tampines Ave 5; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]
+2. AI Governance Framework
+
+Followups Panel:
+(empty)
+
+[SUCCESS] listcontacts
+Listed all 2 contact(s).
+
+Contacts Panel:
+1. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+2. Zoe Clark; Phone: 96666666; Email: zoe@example.com; Address: 707 Tampines Ave 5; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]
+2. AI Governance Framework
+
+Followups Panel:
+(empty)
+
+[SUCCESS] liststories
+Listed all 2 story(ies).
+
+Contacts Panel:
+1. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+2. Zoe Clark; Phone: 96666666; Email: zoe@example.com; Address: 707 Tampines Ave 5; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]
+2. AI Governance Framework
+
+Followups Panel:
+(empty)
+
+[SUCCESS] listfollowups
+Listed all 0 followup(s).
+
+Contacts Panel:
+1. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+2. Zoe Clark; Phone: 96666666; Email: zoe@example.com; Address: 707 Tampines Ave 5; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]
+2. AI Governance Framework
+
+Followups Panel:
+(empty)
+
+[SUCCESS] list
+Listed all 2 contact(s), 2 story(ies) and 0 followup(s).
+
+Contacts Panel:
+1. Edward Norton; Phone: 95555555; Email: edward@example.com; Address: 606 Bedok Reservoir Rd; Tags: ; Stories: 
+2. Zoe Clark; Phone: 96666666; Email: zoe@example.com; Address: 707 Tampines Ave 5; Tags: ; Stories: 
+
+Stories Panel:
+1. Green Energy Transition; Tags: [Renewable]
+2. AI Governance Framework
+
+Followups Panel:
+(empty)
+
