@@ -260,7 +260,8 @@ public class CliTestRunner {
     }
 
     /**
-     * Formats the contents of the contacts panel, stories panel, and followups panel.
+     * Formats the contents of the contacts panel, stories panel, and followups panel,
+     * along with their active filter status labels.
      *
      * @param logic The application logic containing the filtered lists.
      * @return Formatted string representing the contents of all three panels.
@@ -269,7 +270,8 @@ public class CliTestRunner {
         StringBuilder sb = new StringBuilder();
         String lineSep = System.lineSeparator();
 
-        sb.append("Contacts Panel:").append(lineSep);
+        String contactFilter = logic.getContactFilterStatusProperty().getValue();
+        sb.append("Contacts Panel [").append(contactFilter).append("]:").append(lineSep);
         ObservableList<Contact> contacts = logic.getFilteredContactList();
         if (contacts.isEmpty()) {
             sb.append("(empty)").append(lineSep);
@@ -280,7 +282,8 @@ public class CliTestRunner {
         }
         sb.append(lineSep);
 
-        sb.append("Stories Panel:").append(lineSep);
+        String storyFilter = logic.getStoryFilterStatusProperty().getValue();
+        sb.append("Stories Panel [").append(storyFilter).append("]:").append(lineSep);
         ObservableList<Story> stories = logic.getFilteredStoryList();
         if (stories.isEmpty()) {
             sb.append("(empty)").append(lineSep);
@@ -291,7 +294,8 @@ public class CliTestRunner {
         }
         sb.append(lineSep);
 
-        sb.append("Followups Panel:").append(lineSep);
+        String followupFilter = logic.getFollowupFilterStatusProperty().getValue();
+        sb.append("Followups Panel [").append(followupFilter).append("]:").append(lineSep);
         ObservableList<Followup> followups = logic.getFilteredFollowupList();
         if (followups.isEmpty()) {
             sb.append("(empty)").append(lineSep);

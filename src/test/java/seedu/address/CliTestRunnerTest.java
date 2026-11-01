@@ -122,9 +122,9 @@ public class CliTestRunnerTest {
         assertTrue(outputContent.contains("Unknown command."));
         assertTrue(outputContent.contains("[ERROR] deletecontact 9999"));
         assertTrue(outputContent.contains("The contact index provided is invalid."));
-        assertTrue(outputContent.contains("Contacts Panel:"));
-        assertTrue(outputContent.contains("Stories Panel:"));
-        assertTrue(outputContent.contains("Followups Panel:"));
+        assertTrue(outputContent.contains("Contacts Panel [All]:"));
+        assertTrue(outputContent.contains("Stories Panel [All]:"));
+        assertTrue(outputContent.contains("Followups Panel [All]:"));
         assertTrue(outputContent.contains("Alex Yeoh"));
 
         assertTrue(outContent.toString().contains("Total commands executed: 4"));
@@ -158,9 +158,9 @@ public class CliTestRunnerTest {
         String outputContent = Files.readString(output, StandardCharsets.UTF_8);
         assertTrue(outputContent.contains("[SUCCESS] clear"));
         String lineSep = System.lineSeparator();
-        assertTrue(outputContent.contains("Contacts Panel:" + lineSep + "(empty)"));
-        assertTrue(outputContent.contains("Stories Panel:" + lineSep + "(empty)"));
-        assertTrue(outputContent.contains("Followups Panel:" + lineSep + "(empty)"));
+        assertTrue(outputContent.contains("Contacts Panel [All]:" + lineSep + "(empty)"));
+        assertTrue(outputContent.contains("Stories Panel [All]:" + lineSep + "(empty)"));
+        assertTrue(outputContent.contains("Followups Panel [All]:" + lineSep + "(empty)"));
     }
 
     @Test
@@ -221,5 +221,42 @@ public class CliTestRunnerTest {
         }, out, err);
 
         assertEquals(CliTestRunner.EXIT_CODE_COMMAND_FAILURE, exitCode);
+    }
+
+    @Test
+    public void run_filterCommands_displaysActiveFilterLabels() throws IOException {
+        Path input = temporaryFolder.resolve("commands.txt");
+        Path output = temporaryFolder.resolve("results.txt");
+        Path data = temporaryFolder.resolve("addressbook.json");
+        Path prefs = temporaryFolder.resolve("preferences.json");
+
+        List<String> commandLines = List.of(
+                "findcontacts Alex",
+                "findstories Launch",
+                "liststories ci/1",
+                "deletecontact 1"
+        );
+        Files.write(input, commandLines, StandardCharsets.UTF_8);
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(outContent);
+        PrintStream err = new PrintStream(errContent);
+
+        int exitCode = CliTestRunner.run(new String[] {
+            "--data", data.toString(),
+            "--prefs", prefs.toString(),
+            input.toString(),
+            output.toString()
+        }, out, err);
+
+        assertEquals(CliTestRunner.EXIT_CODE_SUCCESS, exitCode);
+        String outputContent = Files.readString(output, StandardCharsets.UTF_8);
+        assertTrue(outputContent.contains("Contacts Panel [Filtered: \"Alex\"]:"));
+        assertTrue(outputContent.contains("Stories Panel [Filtered: \"Launch\"]:"));
+        assertTrue(outputContent.contains("Stories Panel [Filtered by Contact: \"Alex Yeoh\"]:"));
+        // After deleting Alex Yeoh, the linked filter on stories is reset to [All]
+        assertTrue(outputContent.contains("[SUCCESS] deletecontact 1"));
+        assertTrue(outputContent.contains("Stories Panel [All]:"));
     }
 }
