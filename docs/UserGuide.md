@@ -101,12 +101,22 @@ This guide describes the features implemented for PressMemo v1.6.
 `addcontact NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]…​`
 
 #### Parameters
+<<<<<<< Updated upstream
 | Parameter  | Type           | Description                         | Examples              |
 |------------|----------------|-------------------------------------|-----------------------|
 | `NAME`     | `user-string`  | Name of the contact to add          | Jane Smith            |
 | `PHONE`    | `user-string`  | Phone number of the contact to add  | 98765432              |
 | `EMAIL`    | `user-string`  | Email address of the contact to add | janesmith@example.com |
 | `ADDRESS`  | `user-string`  | Address of the contact to add       | 1 Kent Ridge Drive    |
+=======
+
+| Parameter | Type          | Description                         | Examples              |
+| --------- | ------------- | ----------------------------------- | --------------------- |
+| `NAME`    | `user-string` | Name of the contact to add          | Jane Smith            |
+| `PHONE`   | `user-string` | Phone number of the contact to add  | 98765432              |
+| `EMAIL`   | `user-string` | Email address of the contact to add | janesmith@example.com |
+| `ADDRESS` | `user-string` | Address of the contact to add       | 1 Kent Ridge Drive    |
+>>>>>>> Stashed changes
 
 > **Tip / Note:**
 > * `NAME`, `p/PHONE`, `e/EMAIL` and `a/ADDRESS` must be specified exactly once and cannot be blank.
@@ -133,15 +143,15 @@ This guide describes the features implemented for PressMemo v1.6.
 
 PressMemo provides `list` for displaying all three lists, as well as separate commands for displaying or filtering an individual list.
 
-| Command | Effect on CONTACTS | Effect on STORIES | Effect on FOLLOW-UPS |
-| --- | --- | --- | --- |
-| `list` | Shows all contacts | Shows all stories | Shows all follow-ups |
-| `listcontacts` | Shows all contacts | Unchanged | Unchanged |
-| `listcontacts si/1` | Shows contacts assigned to displayed story 1 | Unchanged | Unchanged |
-| `liststories` | Unchanged | Shows all stories | Unchanged |
-| `liststories ci/1` | Unchanged | Shows stories assigned to displayed contact 1 | Unchanged |
-| `listfollowups` | Unchanged | Unchanged | Shows all follow-ups |
-| `listfollowups ci/1` | Unchanged | Unchanged | Shows follow-ups linked to displayed contact 1 |
+| Command              | Effect on CONTACTS                           | Effect on STORIES                             | Effect on FOLLOW-UPS                           |
+| -------------------- | -------------------------------------------- | --------------------------------------------- | ---------------------------------------------- |
+| `list`               | Shows all contacts                           | Shows all stories                             | Shows all follow-ups                           |
+| `listcontacts`       | Shows all contacts                           | Unchanged                                     | Unchanged                                      |
+| `listcontacts si/1`  | Shows contacts assigned to displayed story 1 | Unchanged                                     | Unchanged                                      |
+| `liststories`        | Unchanged                                    | Shows all stories                             | Unchanged                                      |
+| `liststories ci/1`   | Unchanged                                    | Shows stories assigned to displayed contact 1 | Unchanged                                      |
+| `listfollowups`      | Unchanged                                    | Unchanged                                     | Shows all follow-ups                           |
+| `listfollowups ci/1` | Unchanged                                    | Unchanged                                     | Shows follow-ups linked to displayed contact 1 |
 
 For the filtered commands, indices are taken from the **currently displayed lists**, not necessarily the full lists. If no entries match a filter, the relevant panel becomes empty.
 
@@ -191,9 +201,9 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Parameters & Constraints
 
-| Parameter        | Type          | Description                                                                          | Examples |
-| :--------------- | :------------ | :----------------------------------------------------------------------------------- | :------- |
-| `si/STORY_INDEX` | `story-index` | (Optional) Story to filter contacts by, from the displayed **STORIES** panel        | `1`      |
+| Parameter        | Type          | Description                                                                  | Examples |
+| :--------------- | :------------ | :--------------------------------------------------------------------------- | :------- |
+| `si/STORY_INDEX` | `story-index` | (Optional) Story to filter contacts by, from the displayed **STORIES** panel | `1`      |
 
 > **Tip / Note:**
 > * `listcontacts` without parameters displays all contacts and clears any active contact filter (including `findcontacts`).
@@ -223,9 +233,9 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Parameters & Constraints
 
-| Parameter | Type | Description | Examples |
-| --- | --- | --- | --- |
-| `ci/CONTACT_INDEX` | Contact Index | Optional 1-based index of the contact in the currently displayed CONTACTS panel, used to filter stories assigned to that contact. | `ci/1` |
+| Parameter          | Type          | Description                                                                                                                       | Examples |
+| ------------------ | ------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `ci/CONTACT_INDEX` | Contact Index | Optional 1-based index of the contact in the currently displayed CONTACTS panel, used to filter stories assigned to that contact. | `ci/1`   |
 
 > **Tip / Note:**
 >
@@ -248,8 +258,8 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Common Errors & Troubleshooting
 
-| Error Message / Symptom | Cause | How to Fix |
-| --- | --- | --- |
+| Error Message / Symptom                            | Cause                                         | How to Fix                                                                                                   |
+| -------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | No stories are displayed after `liststories ci/1`. | The selected contact has no assigned stories. | Check the contact's story assignments, or run `liststories` without parameters to display all stories again. |
 
 ### Editing a contact: `editcontact`
@@ -263,14 +273,14 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Parameters & Constraints
 
-| Parameter   | Type            | Description                                                                                     | Examples            |
-| :---------- | :-------------- | :---------------------------------------------------------------------------------------------- | :------------------ |
-| `INDEX`     | `contact-index` | Contact to edit, from the displayed **CONTACTS** panel                                          | `1`                 |
-| `n/NAME`    | `user-string`   | New name of the contact (must be unique; cannot be blank or start with whitespace)             | Betsy Crower        |
-| `p/PHONE`   | `user-string`   | New phone number (cannot be blank or start with whitespace)                                     | 91234567            |
-| `e/EMAIL`   | `user-string`   | New email address (cannot be blank or start with whitespace)                                    | johndoe@example.com |
+| Parameter   | Type            | Description                                                                                      | Examples            |
+| :---------- | :-------------- | :----------------------------------------------------------------------------------------------- | :------------------ |
+| `INDEX`     | `contact-index` | Contact to edit, from the displayed **CONTACTS** panel                                           | `1`                 |
+| `n/NAME`    | `user-string`   | New name of the contact (must be unique; cannot be blank or start with whitespace)               | Betsy Crower        |
+| `p/PHONE`   | `user-string`   | New phone number (cannot be blank or start with whitespace)                                      | 91234567            |
+| `e/EMAIL`   | `user-string`   | New email address (cannot be blank or start with whitespace)                                     | johndoe@example.com |
 | `a/ADDRESS` | `user-string`   | New physical address (cannot be blank or start with whitespace; forward slashes must be escaped) | 123 Clementi Rd     |
-| `t/TAG`     | `user-string`   | New tag to assign (can be repeated, or `t/` to clear tags; replaces all existing tags)          | friend              |
+| `t/TAG`     | `user-string`   | New tag to assign (can be repeated, or `t/` to clear tags; replaces all existing tags)           | friend              |
 
 > **Tip / Note:**
 > * Provide at least one field to edit (`n/NAME`, `p/PHONE`, `e/EMAIL`, `a/ADDRESS`, or `t/TAG`).
@@ -944,7 +954,7 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 
 --------------------------------------------------------------------------------------------------------------------
 
-## Common Issues and Troubleshooting
+## General Errors and Troubleshooting
 
 | Error Messages / Symptoms                                                                                                                                                                        | Causes                                                                                                                                                                 | How to Fix                                                                                                                                                       |
 | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
